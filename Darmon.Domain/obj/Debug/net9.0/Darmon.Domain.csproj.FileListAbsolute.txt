@@ -1,0 +1,11 @@
+D:\Darmon\Darmon.Domain\bin\Debug\net9.0\Darmon.Domain.deps.json
+D:\Darmon\Darmon.Domain\bin\Debug\net9.0\Darmon.Domain.dll
+D:\Darmon\Darmon.Domain\bin\Debug\net9.0\Darmon.Domain.pdb
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.AssemblyInfoInputs.cache
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.AssemblyInfo.cs
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.csproj.CoreCompileInputs.cache
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.dll
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\refint\Darmon.Domain.dll
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.pdb
+D:\Darmon\Darmon.Domain\obj\Debug\net9.0\ref\Darmon.Domain.dll

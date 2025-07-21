@@ -1,0 +1,15 @@
+D:\Darmon\Darmon.Infrastructure\bin\Debug\net9.0\Darmon.Infrastructure.deps.json
+D:\Darmon\Darmon.Infrastructure\bin\Debug\net9.0\Darmon.Infrastructure.dll
+D:\Darmon\Darmon.Infrastructure\bin\Debug\net9.0\Darmon.Infrastructure.pdb
+D:\Darmon\Darmon.Infrastructure\bin\Debug\net9.0\Darmon.Domain.dll
+D:\Darmon\Darmon.Infrastructure\bin\Debug\net9.0\Darmon.Domain.pdb
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.csproj.AssemblyReference.cache
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.AssemblyInfoInputs.cache
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.AssemblyInfo.cs
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.csproj.CoreCompileInputs.cache
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.I.44F4D5CD.Up2Date
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.dll
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\refint\Darmon.Infrastructure.dll
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\Darmon.Infrastructure.pdb
+D:\Darmon\Darmon.Infrastructure\obj\Debug\net9.0\ref\Darmon.Infrastructure.dll
