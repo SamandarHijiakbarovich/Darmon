@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e75a615cc7dfe449618e4f2aeb103f6b754ed2ce")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b36fbd2b80ce6ccf541bc391705eabf0bd97a8af")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

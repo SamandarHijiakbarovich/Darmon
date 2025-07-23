@@ -9,14 +9,13 @@ namespace Darmon.Domain.Entities;
 
 internal class OrderItem:BaseEntity
 {
-    public Guid Id { get; set; }
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
 
-    public Guid OrderId { get; set; }
-    public Order Order { get; set; } = default!;
+        // Relations
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
 
-    public Guid ProductId { get; set; }
-    public Product Product { get; set; } = default!;
-
-    public int Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
 }

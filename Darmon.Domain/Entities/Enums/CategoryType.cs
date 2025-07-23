@@ -8,6 +8,10 @@ namespace Darmon.Domain.Entities.Enums;
 
 internal enum CategoryType
 {
-    Food,
-    Medicine
+    Antibiotics,
+    Painkillers,
+    Vitamins,
+    Antihistamines,
+    Antipyretics,
+    Other
 }

@@ -9,8 +9,10 @@ namespace Darmon.Domain.Entities.Enums;
 internal enum OrderStatus
 {
     Pending,
-    Accepted,
-    InDelivery,
+    Confirmed,
+    Processing,
+    Shipped,
     Delivered,
-    Cancelled
+    Cancelled,
+    Returned
 }

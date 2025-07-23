@@ -8,13 +8,19 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class User:BaseEntity
+internal class User : AuditableEntity
 {
-    public Guid Id { get; set; }
-    public string FullName { get; set; } = default!;
-    public string Email { get; set; } = default!;
-    public string PasswordHash { get; set; } = default!;
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
+    public string PasswordHash { get; set; }
     public UserRole Role { get; set; }
-
-    public ICollection<Order> Orders { get; set; } = new List<Order>();
+    
+    // Navigation properties
+    public ICollection<Address> Addresses { get; set; }
+    public ICollection<Order> Orders { get; set; }
+    public ICollection<ProductReview> Reviews { get; set; }
+    public ICollection<CartItem> CartItems { get; set; }
+    public ICollection<Notification> Notifications { get; set; }
 }

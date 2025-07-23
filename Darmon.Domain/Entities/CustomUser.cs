@@ -9,23 +9,16 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class CustomUser:BaseEntity
+internal class CustomUser : BaseEntity
 {
-    [Key]
-    public Guid Id { get; set; }
-
-    [Required]
-    public string Username { get; set; }
-
     public string FirstName { get; set; }
     public string LastName { get; set; }
-
-    [Required]
-    public string Role { get; set; } = UserRole.User.ToString();
-
     public string PhoneNumber { get; set; }
+    public string Email { get; set; }
+    public UserRole Role { get; set; }
 
-    public string PasswordHash { get; set; }
-
-    public string FullName => $"{FirstName} {LastName}".Trim();
+        // Relations
+    public ICollection<Address> Addresses { get; set; }
+    public ICollection<Order> Orders { get; set; }
+    public SellerWallet? SellerWallet { get; set; }
 }

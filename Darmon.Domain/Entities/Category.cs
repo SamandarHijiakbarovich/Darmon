@@ -9,16 +9,13 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities
 {
-    internal class Category:BaseEntity
+    internal class Category:AuditableEntity
     {
-        [Key]
-        public int Id { get; set; }
+         public string Name { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
 
-
-        public string Name { get; set; }
-
-        public CategoryType Type { get; set; }
-
+        // Relations
         public ICollection<Product> Products { get; set; }
     }
 }

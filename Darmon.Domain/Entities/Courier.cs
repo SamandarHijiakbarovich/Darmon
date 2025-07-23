@@ -9,7 +9,7 @@ namespace Darmon.Domain.Entities;
 
 internal class Courier: BaseEntity
 {
-    public Guid Id { get; set; }
+    
     public string FullName { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
 

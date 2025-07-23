@@ -9,18 +9,20 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Order:BaseEntity
-{
-    public Guid Id { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public OrderStatus Status { get; set; }
+internal class Order:AuditableEntity
+{    
+    public string OrderNumber { get; set; }
+        public decimal TotalAmount { get; set; }
+        public OrderStatus Status { get; set; }
 
-    public Guid UserId { get; set; }
-    public User User { get; set; } = default!;
+        // Relations
+        public string UserId { get; set; }
+        public CustomUser User { get; set; }
 
-    public Guid CourierId { get; set; }
-    public Courier Courier { get; set; } = default!;
+        public int? DeliveryId { get; set; }
+        public Delivery? Delivery { get; set; }
 
-    public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
-    public Payment Payment { get; set; } = default!;
-}
+        public int? PaymentId { get; set; }
+        public Payment? Payment { get; set; }
+
+        public ICollection<OrderItem> OrderItems { get; set; }

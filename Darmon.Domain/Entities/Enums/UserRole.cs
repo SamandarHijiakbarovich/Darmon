@@ -8,9 +8,8 @@ namespace Darmon.Domain.Entities.Enums;
 
 internal enum UserRole
 {
-    User,
-    Courier,
-    Seller,
-    Owner
-
+    Admin,
+    Customer,
+    DeliveryPerson,
+    PharmacyStaff
 }

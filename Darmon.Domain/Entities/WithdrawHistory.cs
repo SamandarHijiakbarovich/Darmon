@@ -8,17 +8,14 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class WithdrawHistory:BaseEntity
+internal class WithdrawHistory : AuditableEntity
 {
-   
-        [Key]
-        public int Id { get; set; }
-
-        public int WalletId { get; set; }
-        public SellerWallet Wallet { get; set; }
-
         public decimal Amount { get; set; }
+        public WithdrawStatus Status { get; set; }
+        public string BankAccount { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        // Relations
+        public int SellerWalletId { get; set; }
+        public SellerWallet SellerWallet { get; set; }    
     
 }

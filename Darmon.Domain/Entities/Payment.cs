@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Payment:BaseEntity
+internal class Payment : AuditableEntity
 {
-    public Guid Id { get; set; }
-    public Guid OrderId { get; set; }
-    public Order Order { get; set; } = default!;
-    public decimal Amount { get; set; }
-    public DateTime PaymentDate { get; set; }
-    public string PaymentMethod { get; set; } = default!; // e.g., "Credit Card", "Cash", etc.
-    public bool IsSuccessful { get; set; }
+     public decimal Amount { get; set; }
+    public PaymentMethod Method { get; set; }
+    public PaymentStatus Status { get; set; }
+    public string TransactionId { get; set; }
+    
+    // Navigation properties
+    public int OrderId { get; set; }
+    public Order Order { get; set; }
+    
+    public PaymentTransaction PaymentTransaction { get; set; }
 }
