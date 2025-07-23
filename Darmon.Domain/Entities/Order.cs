@@ -9,20 +9,21 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Order:AuditableEntity
-{    
+internal class Order : AuditableEntity
+{
     public string OrderNumber { get; set; }
-        public decimal TotalAmount { get; set; }
-        public OrderStatus Status { get; set; }
+    public decimal TotalAmount { get; set; }
+    public OrderStatus Status { get; set; }
 
-        // Relations
-        public string UserId { get; set; }
-        public CustomUser User { get; set; }
+    // Relations
+    public string UserId { get; set; }
+    public CustomUser User { get; set; }
 
-        public int? DeliveryId { get; set; }
-        public Delivery? Delivery { get; set; }
+    public int? DeliveryId { get; set; }
+    public Delivery? Delivery { get; set; }
 
-        public int? PaymentId { get; set; }
-        public Payment? Payment { get; set; }
+    public int? PaymentId { get; set; }
+    public Payment? Payment { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+    public ICollection<OrderItem> OrderItems { get; set; }
+}
