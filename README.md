@@ -11,7 +11,44 @@ Foydalanuvchilarga atrofdagi dorixonalardagi mavjud dori vositalarini topish, na
 ---
 
 ## 🚀 Asosiy Funksiyalar
+## Tizimning Asosiy Funksiyalari:
 
+1. **Dorilar Katalogi**:
+   - Dorilarni kategoriyalar bo'yicha qidirish
+   - Dori tafsilotlarini ko'rish
+   - Dori mavjudligini tekshirish
+
+2. **Buyurtma Boshqaruvi**:
+   - Savat funksiyasi
+   - Buyurtma yaratish
+   - Buyurtma holatini kuzatish
+   - Buyurtma bekor qilish
+
+3. **Yetkazib Berish**:
+   - Yetkazib berish manzilini belgilash
+   - Yetkazib berish vaqtini tanlash
+   - Yetkazib berish holatini kuzatish
+
+4. **Foydalanuvchi Boshqaruvi**:
+   - Ro'yxatdan o'tish/kirish
+   - Profilni boshqarish
+   - Buyurtmalar tarixi
+
+## Qo'shimcha Tavsiyalar:
+
+1. **Payment Gateway** integrasiyasi (Payme, Click kabi)
+2. **Telegram Bot** integratsiyasi bildirishnomalar uchun
+3. **GIS Xarita** integratsiyasi yetkazib berish uchun
+4. **Mobile App** uchun API endpointlarni alohida guruhlash
+
+Loyiha uchun kerak bo'ladigan asosiy package'lar:
+- MediatR (CQRS patterni uchun)
+- Entity Framework Core (ORM)
+- AutoMapper (Mappinglar uchun)
+- FluentValidation (Validation uchun)
+- JWT (Autentifikatsiya uchun)
+                                                                                              #
+#### ###### ###################################################################################
 ### 👤 Foydalanuvchi Uchun:
 - 🔍 Dorilarni nomi bo‘yicha qidirish
 - 📋 Dorining narxi, ishlab chiqaruvchisi va qo‘llanilishi haqida ma’lumot olish
