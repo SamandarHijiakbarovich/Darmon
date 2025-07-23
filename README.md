@@ -111,4 +111,3 @@ samaralilar roli (Admin, Dorixona, Mijoz) asosida access boshqariladi
  👨‍⚕️ Retseptni yuklash va natija tizimi
 
 
-

@@ -9,7 +9,6 @@ namespace Darmon.Domain.Entities;
 
 internal class Branch: BaseEntity
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = default!;
     public string Address { get; set; } = default!;
 
