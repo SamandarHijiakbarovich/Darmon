@@ -93,12 +93,17 @@ Loyiha uchun kerak bo'ladigan asosiy package'lar:
 ## 🧱 Arxitektura
 
 Loyiha **Clean Architecture** asosida ishlab chiqilgan:
+<img width="356" height="303" alt="image" src="https://github.com/user-attachments/assets/aaf8377c-2baa-4d75-8bfd-6695d9982ed1" />
+
+
+
 
 Darmon.sln
  ├── Darmon.Api
  ├── Darmon.Application
  ├── Darmon.Domain
  └── Darmon.Infrastructure
+
 
 ---
 
