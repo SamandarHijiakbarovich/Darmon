@@ -1,7 +1,7 @@
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
 
-internal class CartItem : BaseEntity
+public class CartItem : BaseEntity
 {
     public int ProductId { get; set; }
     public int Quantity { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities.Enums;
 
-internal enum UserRole
+public enum UserRole
 {
     Admin,
     Customer,

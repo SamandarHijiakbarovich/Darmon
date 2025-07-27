@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Courier: BaseEntity
+public class Courier: BaseEntity
 {
     
     public string FullName { get; set; } = default!;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class SellerWallet:BaseEntity
+public class SellerWallet:BaseEntity
 {
     public decimal Balance { get; set; }
 

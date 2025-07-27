@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Payment : AuditableEntity
+public class Payment : AuditableEntity
 {
      public decimal Amount { get; set; }
     public PaymentMethod Method { get; set; }

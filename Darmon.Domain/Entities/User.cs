@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class User : AuditableEntity
+public class User : AuditableEntity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -18,9 +18,11 @@ internal class User : AuditableEntity
     public UserRole Role { get; set; }
     
     // Navigation properties
-    public ICollection<Address> Addresses { get; set; }
+   public int AddressId { get; set; }
+    public Address Address { get; set; }
     public ICollection<Order> Orders { get; set; }
-   // public ICollection<ProductReview> Reviews { get; set; }
-   // public ICollection<CartItem> CartItems { get; set; }
-   // public ICollection<Notification> Notifications { get; set; }
+    public ICollection<Notification> Notifications { get; set; }
+    // public ICollection<ProductReview> Reviews { get; set; }
+    // public ICollection<CartItem> CartItems { get; set; }
+    // public ICollection<Notification> Notifications { get; set; }
 }

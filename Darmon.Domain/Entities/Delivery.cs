@@ -1,6 +1,6 @@
 using Darmon.Domain.Entities;
 
-internal class Delivery:AuditableEntity
+public class Delivery:AuditableEntity
 {
         public DateTime EstimatedDeliveryTime { get; set; }
         public DateTime? ActualDeliveryTime { get; set; }
@@ -13,4 +13,8 @@ internal class Delivery:AuditableEntity
 
         public int? DeliveryPersonId { get; set; }
         public DeliveryPerson? DeliveryPerson { get; set; }
+
+    // Relations
+        public int OrderId { get; set; }  // Foreign key
+        public Order Order { get; set; }  // <- Navigation property bo'lishi SHART
 }

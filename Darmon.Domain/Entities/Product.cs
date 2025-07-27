@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Product:AuditableEntity
+public class Product:AuditableEntity
 {
        public string Name { get; set; }
         public string Description { get; set; }
@@ -26,5 +26,6 @@ internal class Product:AuditableEntity
 
         public ICollection<ProductImage> Images { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
+    public ICollection<ProductReview> Reviews { get; set; }
 
 }
