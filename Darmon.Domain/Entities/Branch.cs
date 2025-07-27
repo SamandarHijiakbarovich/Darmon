@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Branch: AuditableEntity
+public class Branch: AuditableEntity
 {
         public string Name { get; set; }
         public string PhoneNumber { get; set; }

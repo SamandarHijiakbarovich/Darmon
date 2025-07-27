@@ -1,7 +1,7 @@
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
 
-internal class Address:BaseEntity
+public class Address:BaseEntity
 {
      public string Street { get; set; }
     public string City { get; set; }
@@ -13,4 +13,7 @@ internal class Address:BaseEntity
     // Navigation properties
     public int UserId { get; set; }
     public User User { get; set; }
+    public int BranchId { get; set; } // <- Yangi qo'shilgan maydon
+    public Branch Branch { get; set; } // Navigation property// Foreign key
+
 }

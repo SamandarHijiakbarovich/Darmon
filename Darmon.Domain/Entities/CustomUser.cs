@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class CustomUser : BaseEntity
+public class CustomUser : BaseEntity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

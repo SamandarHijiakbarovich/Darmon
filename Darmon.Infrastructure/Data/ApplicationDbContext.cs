@@ -33,6 +33,12 @@ namespace Darmon.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
+            // OwnsOne ni O'CHIRING
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.ToTable("Addresses");
+            });
             // User konfiguratsiyalari
             modelBuilder.Entity<User>(entity =>
             {
@@ -44,7 +50,9 @@ namespace Darmon.Infrastructure.Data
                     .WithOne(n => n.User)
                     .HasForeignKey(n => n.UserId);
 
-                entity.OwnsOne(u => u.Address); // Address owned type sifatida
+                entity.HasOne(u => u.Address) // <- Endi bu navigation property
+             .WithMany()
+             .HasForeignKey(u => u.AddressId); // Address owned type sifatida
             });
 
             // Product konfiguratsiyalari

@@ -1,7 +1,7 @@
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
 
-internal class Notification : BaseEntity
+public class Notification : BaseEntity
 {
     public string Message { get; set; }
     public bool IsRead { get; set; }

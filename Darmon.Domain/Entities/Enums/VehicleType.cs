@@ -1,4 +1,4 @@
-internal enum VehicleType
+public enum VehicleType
 {
     Car,
     Motorcycle,
