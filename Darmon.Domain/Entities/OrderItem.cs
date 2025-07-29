@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class OrderItem:BaseEntity
+public class OrderItem:BaseEntity
 {
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }

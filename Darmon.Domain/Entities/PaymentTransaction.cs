@@ -1,7 +1,7 @@
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
 
-internal class PaymentTransaction : BaseEntity
+public class PaymentTransaction : BaseEntity
 {
     public string GatewayTransactionId { get; set; }
     public string GatewayName { get; set; }

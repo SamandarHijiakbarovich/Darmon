@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class ProductImage:BaseEntity
+public class ProductImage:BaseEntity
 {
         public string ImageUrl { get; set; }
         public bool IsMain { get; set; }

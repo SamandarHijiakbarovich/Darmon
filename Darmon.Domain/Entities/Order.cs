@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class Order : AuditableEntity
+public class Order : AuditableEntity
 {
     public string OrderNumber { get; set; }
     public decimal TotalAmount { get; set; }
@@ -17,7 +17,7 @@ internal class Order : AuditableEntity
 
     // Relations
     public string UserId { get; set; }
-    public CustomUser User { get; set; }
+    public User User { get; set; }
 
     public int? DeliveryId { get; set; }
     public Delivery? Delivery { get; set; }

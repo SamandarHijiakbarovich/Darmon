@@ -1,6 +1,6 @@
 using Darmon.Domain.Entities;
 
-internal class DeliveryPerson : User
+public class DeliveryPerson : User
 {
     public string VehicleNumber { get; set; }
     public bool IsAvailable { get; set; }

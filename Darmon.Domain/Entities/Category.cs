@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities
 {
-    internal class Category:AuditableEntity
+    public class Category:AuditableEntity
     {
          public string Name { get; set; }
         public string Description { get; set; }

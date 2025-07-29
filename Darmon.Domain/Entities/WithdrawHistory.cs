@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-internal class WithdrawHistory : AuditableEntity
+public class WithdrawHistory : AuditableEntity
 {
         public decimal Amount { get; set; }
         public WithdrawStatus Status { get; set; }
