@@ -15,3 +15,5 @@ tests/**/obj/
 # NuGet
 *.nupkg
 packages/
+[Bb]in/
+[Oo]bj/

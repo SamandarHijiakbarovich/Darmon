@@ -177,3 +177,4 @@ D:\Darmon\Darmon.API\obj\Debug\net9.0\refint\Darmon.API.dll
 D:\Darmon\Darmon.API\obj\Debug\net9.0\Darmon.API.pdb
 D:\Darmon\Darmon.API\obj\Debug\net9.0\Darmon.API.genruntimeconfig.cache
 D:\Darmon\Darmon.API\obj\Debug\net9.0\ref\Darmon.API.dll
+D:\Darmon\Darmon.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

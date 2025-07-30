@@ -2,6 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Darmon.Domain\Darmon.Domain.csproj" />
+    <ProjectReference Include="..\Darmon.Infrastructure\Darmon.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
   </ItemGroup>
 
   <PropertyGroup>

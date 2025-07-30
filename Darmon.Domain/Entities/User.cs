@@ -15,6 +15,9 @@ public class User : AuditableEntity
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
     public string PasswordHash { get; set; }
+
+    public string? ResetToken { get; set; }
+    public DateTime? ResetTokenExpires { get; set; }
     public UserRole Role { get; set; }
     
     // Navigation properties
@@ -22,7 +25,7 @@ public class User : AuditableEntity
     public Address Address { get; set; }
     public ICollection<Order> Orders { get; set; }
     public ICollection<Notification> Notifications { get; set; }
-    // public ICollection<ProductReview> Reviews { get; set; }
-    // public ICollection<CartItem> CartItems { get; set; }
-    // public ICollection<Notification> Notifications { get; set; }
+    public ICollection<ProductReview> Reviews { get; set; }
+     public ICollection<CartItem> CartItems { get; set; }
+     //public ICollection<Notification> Notifications { get; set; }
 }
