@@ -14,6 +14,7 @@ namespace Darmon.Infrastructure.Repositories
         public async Task<User> GetByEmailAsync(string email)
         {
             return await _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 
@@ -32,5 +33,8 @@ namespace Darmon.Infrastructure.Repositories
                     x.RefreshToken == refreshToken &&
                     x.RefreshTokenExpires > DateTime.UtcNow);
         }
+
+
+        
     }
 }

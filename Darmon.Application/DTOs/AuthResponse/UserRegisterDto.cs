@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Darmon.Application.DTOs.AuthResponse;
@@ -26,5 +27,6 @@ public class UserRegisterDto
     [Required(ErrorMessage = "Phone number is required")]
     public string PhoneNumber { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserRole Role { get; set; }
 }
