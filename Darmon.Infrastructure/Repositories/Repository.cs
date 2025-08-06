@@ -85,5 +85,10 @@ public class Repository<T>:IRepository<T> where T:class
     {
         return await _context.SaveChangesAsync();
     }
+
+    public IQueryable<T> GetAll()
+    {
+        return _dbSet.AsNoTracking();
+    }
 }
     

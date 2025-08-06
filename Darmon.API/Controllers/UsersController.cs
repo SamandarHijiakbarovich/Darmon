@@ -1,4 +1,5 @@
 ﻿using Darmon.Application.DTOs;
+using Darmon.Application.DTOs.PagedDto;
 using Darmon.Application.DTOs.User;
 using Darmon.Application.Interfaces;
 using Darmon.Domain.Entities.Enums;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Darmon.API.Controllers;
@@ -33,17 +35,18 @@ public class UsersController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAll()
+
+    public async Task<IActionResult> GetAll([FromQuery] PaginationParams pagination)
     {
         try
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync(pagination);
             return Ok(users);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting all users");
-            return StatusCode(500, new { Error = "Internal server error" });
+            _logger.LogError(ex, "Error getting users");
+            return StatusCode(500, new ErrorResponseDto("Server error"));
         }
     }
 
@@ -57,15 +60,19 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetById(int id)
     {
+
         try
         {
+            if (!User.IsInRole("Admin") && GetCurrentUserId() != id)
+                return Forbid();
+
             var user = await _userService.GetUserByIdAsync(id);
             return user == null ? NotFound() : Ok(user);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error getting user with ID {id}");
-            return StatusCode(500, new { Error = "Internal server error" });
+            _logger.LogError(ex, $"Error getting user {id}");
+            return StatusCode(500, new ErrorResponseDto("Server error"));
         }
     }
 
@@ -133,5 +140,11 @@ public class UsersController : ControllerBase
             _logger.LogError(ex, $"Error changing role for user with ID {id}");
             return StatusCode(500, new { Error = ex.Message });
         }
+    }
+
+
+    private int GetCurrentUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
     }
 }
