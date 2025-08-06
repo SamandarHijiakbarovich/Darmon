@@ -11,4 +11,5 @@ public interface IUserRepository:IRepository<User>
 {
     Task<User> GetByResetTokenAsync(string resetToken);
     Task<User> GetByEmailAsync(string email);
+    Task<User?> GetByRefreshTokenAsync(string refreshToken);
 }

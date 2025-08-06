@@ -14,4 +14,5 @@ public class SmtpSettings
     public int Port { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
+    public string BaseUrl { get; set; } // Base URL for the application, used in email links
 }

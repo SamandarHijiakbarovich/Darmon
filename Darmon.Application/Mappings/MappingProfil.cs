@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Darmon.Application.DTOs;
+using Darmon.Application.DTOs.User;
 using Darmon.Domain.Entities;
 using System;
 using System.Collections.Generic;

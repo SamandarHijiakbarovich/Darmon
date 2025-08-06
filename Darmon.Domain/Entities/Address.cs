@@ -13,7 +13,7 @@ public class Address:BaseEntity
     // Navigation properties
     public int UserId { get; set; }
     public User User { get; set; }
-    public int BranchId { get; set; } // <- Yangi qo'shilgan maydon
-    public Branch Branch { get; set; } // Navigation property// Foreign key
+    public int? BranchId { get; set; } // Nullable qiling (agar filialsiz manzil bo'lishi mumkin bo'lsa)
+    public Branch? Branch { get; set; }
 
 }

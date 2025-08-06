@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Darmon.Application.DTOs;
+namespace Darmon.Application.DTOs.AuthResponse;
 
 public class ResetPasswordDto
 {

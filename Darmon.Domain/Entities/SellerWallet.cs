@@ -10,11 +10,14 @@ namespace Darmon.Domain.Entities;
 
 public class SellerWallet:BaseEntity
 {
+   
     public decimal Balance { get; set; }
 
-        // Relations
-    public string UserId { get; set; }
-    public CustomUser User { get; set; }
+    // Foreign key
+    public int UserId { get; set; }
 
-    public ICollection<WithdrawHistory> WithdrawHistories { get; set; }
+    // Navigation property
+    public virtual User User { get; set; }
+
+    public virtual ICollection<WithdrawHistory> WithdrawHistories { get; set; }
 }
