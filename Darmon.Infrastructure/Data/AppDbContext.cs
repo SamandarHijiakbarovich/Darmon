@@ -7,187 +7,228 @@ namespace Darmon.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         if (!options.IsConfigured)
         {
-            options.UseNpgsql("Host=localhost;Port=5433;Database=DarmonDb;Username=Samandar;Password=samandar2004");
+            options.UseNpgsql("Host=localhost;Port=5432;Database=DarmonDb;Username=Samandar;Password=samandar2004")
+                   .EnableDetailedErrors()
+                   .EnableSensitiveDataLogging();
         }
     }
-    // Asosiy DbSetlar
-    public DbSet<User> Users { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Order> Orders { get; set; }
+
+    // DbSets
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Branch> Branches { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
-    public DbSet<Payment> Payments { get; set; }
-    public DbSet<SellerWallet> SellerWallets { get; set; }
-    public DbSet<DeliveryPerson> DeliveryPersons { get; set; }
+    public DbSet<DeliveryPerson> DeliveryPeople { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
+    public DbSet<ProductReview> ProductReviews { get; set; }
+    public DbSet<SellerWallet> SellerWallets { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<WithdrawHistory> WithdrawHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-
-        // OwnsOne ni O'CHIRING
+        // Address configuration
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.ToTable("Addresses");
-        });
-        // User konfiguratsiyalari
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasMany(u => u.Orders)
-                .WithOne(o => o.User)
-                .HasForeignKey(o => o.UserId);
+            entity.HasOne(a => a.Branch)
+                .WithOne(b => b.Address)
+                .HasForeignKey<Address>(a => a.BranchId)
+                .IsRequired(false);
 
-            entity.HasMany(u => u.Notifications)
-                .WithOne(n => n.User)
-                .HasForeignKey(n => n.UserId);
-
-            entity.HasOne(u => u.Address) // <- Endi bu navigation property
-         .WithMany()
-         .HasForeignKey(u => u.AddressId); // Address owned type sifatida
+            entity.HasQueryFilter(a => !a.IsDeleted);
         });
 
-        // Product konfiguratsiyalari
-        modelBuilder.Entity<Product>(entity =>
+        // Branch configuration
+        modelBuilder.Entity<Branch>(entity =>
         {
-            entity.HasMany(p => p.Images)
+            entity.HasOne(b => b.Address)
                 .WithOne()
-                .HasForeignKey(pi => pi.ProductId);
+                .HasForeignKey<Address>(a => a.BranchId)
+                .IsRequired(false);
 
-            entity.HasMany(p => p.Reviews)
-                .WithOne(r => r.Product)
-                .HasForeignKey(r => r.ProductId);
-
-            entity.HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId);
+            entity.HasQueryFilter(b => !b.IsDeleted);
         });
 
-        // Order konfiguratsiyalari
+        // CartItem configuration
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.HasOne(ci => ci.User)
+                .WithMany(u => u.CartItems)
+                .HasForeignKey(ci => ci.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ci => ci.Product)
+                .WithMany()
+                .HasForeignKey(ci => ci.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasQueryFilter(ci => !ci.IsDeleted);
+        });
+
+        // Delivery configuration
+        modelBuilder.Entity<Delivery>(entity =>
+        {
+            entity.HasOne(d => d.DeliveryPerson)
+                .WithMany(dp => dp.Deliveries)
+                .HasForeignKey(d => d.DeliveryPersonId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(d => d.Status)
+                .HasConversion<string>();
+
+            entity.HasQueryFilter(d => !d.IsDeleted);
+        });
+
+        // Order configuration
         modelBuilder.Entity<Order>(entity =>
         {
-            // Order -> OrderItems (One-to-Many)
             entity.HasMany(o => o.OrderItems)
-                .WithOne(oi => oi.Order)  // OrderItem ichidagi Order navigation property nomi
+                .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);  // Order o'chganda OrderItems ham o'chadi
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Order -> Delivery (One-to-One)
             entity.HasOne(o => o.Delivery)
                 .WithOne(d => d.Order)
-                .HasForeignKey<Delivery>(d => d.OrderId)  // Delivery jadvalidagi OrderId foreign key
-                .IsRequired(false);  // Optional relationship
+                .HasForeignKey<Delivery>(d => d.OrderId)
+                .IsRequired(false);
 
-            // Order -> Payment (One-to-One)
             entity.HasOne(o => o.Payment)
                 .WithOne(p => p.Order)
                 .HasForeignKey<Payment>(p => p.OrderId)
-                .IsRequired(false);  // Optional relationship
+                .IsRequired(false);
 
-            // Order -> User (Many-to-One)
             entity.HasOne(o => o.User)
                 .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.UserId)
-                .OnDelete(DeleteBehavior.Restrict);  // User o'chganda Orderlar o'chmasin
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Enum conversion
             entity.Property(o => o.Status)
                 .HasConversion<string>()
-                .HasMaxLength(20);  // DBda string sifatida saqlash uchun max length
+                .HasMaxLength(20);
 
-            // Indexes
-            entity.HasIndex(o => o.OrderNumber)
-                .IsUnique();
-
+            entity.HasIndex(o => o.OrderNumber).IsUnique();
             entity.HasIndex(o => o.Status);
+
+            entity.HasQueryFilter(o => !o.IsDeleted);
         });
 
-
-        modelBuilder.Entity<ProductReview>(entity =>
+        // OrderItem configuration
+        modelBuilder.Entity<OrderItem>(entity =>
         {
-            // ProductReview -> Product (Many-to-One)
-            entity.HasOne(pr => pr.Product)
-                .WithMany(p => p.Reviews)
-                .HasForeignKey(pr => pr.ProductId)
-                .OnDelete(DeleteBehavior.Cascade); // Product o'chganda reviewlar ham o'chadi
-
-            // ProductReview -> User (Many-to-One)
-            entity.HasOne(pr => pr.User)
+            entity.HasOne(oi => oi.Product)
                 .WithMany()
-                .HasForeignKey(pr => pr.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // User o'chganda reviewlar o'chmasin
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasQueryFilter(oi => !oi.IsDeleted);
         });
 
-        // Payment konfiguratsiyalari
+        // Payment configuration
         modelBuilder.Entity<Payment>(entity =>
         {
             entity.HasOne(p => p.PaymentTransaction)
                 .WithOne(t => t.Payment)
                 .HasForeignKey<PaymentTransaction>(t => t.PaymentId);
 
-            entity.Property(p => p.Method)
-                .HasConversion<string>();
+            entity.Property(p => p.Method).HasConversion<string>();
+            entity.Property(p => p.Status).HasConversion<string>();
 
-            entity.Property(p => p.Status)
-                .HasConversion<string>();
+            entity.HasQueryFilter(p => !p.IsDeleted);
         });
 
-        // Delivery konfiguratsiyalari
-        modelBuilder.Entity<Delivery>(entity =>
+        // Product configuration
+        modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasOne(d => d.DeliveryPerson)
-                .WithMany()
-                .HasForeignKey(d => d.DeliveryPersonId);
+            entity.HasMany(p => p.Images)
+                .WithOne(pi => pi.Product)
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            entity.Property(d => d.Status)
-                .HasConversion<string>();
-        });
+            entity.HasMany(p => p.Reviews)
+                .WithOne(r => r.Product)
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-        // order konfiguratsiyalari
-        modelBuilder.Entity<OrderItem>(entity =>
-        {
-            entity.HasKey(oi => oi.Id);
-
-            entity.HasOne(oi => oi.Product)
-                .WithMany()
-                .HasForeignKey(oi => oi.ProductId)
+            entity.HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(p => p.Name);
+
+            entity.HasQueryFilter(p => !p.IsDeleted);
         });
 
-        // One-to-One konfiguratsiya
-        modelBuilder.Entity<Branch>(entity =>
+        // ProductImage configuration
+        modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasOne(b => b.Address)
-                  .WithOne()
-                  .HasForeignKey<Address>(a => a.BranchId)
-                  .IsRequired(false); // Agar optional bo'lsa
+            entity.HasQueryFilter(pi => !pi.IsDeleted);
         });
 
+        // ProductReview configuration
+        modelBuilder.Entity<ProductReview>(entity =>
+        {
+            entity.HasQueryFilter(pr => !pr.IsDeleted);
+        });
 
-        // Enum konfiguratsiyalari
-        modelBuilder.Entity<User>()
-            .Property(u => u.Role)
-            .HasConversion<string>();
+        // SellerWallet configuration
+        modelBuilder.Entity<SellerWallet>(entity =>
+        {
+            entity.HasOne(sw => sw.User)
+                .WithOne(u => u.SellerWallet)
+                .HasForeignKey<SellerWallet>(sw => sw.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-        // Global query filter (soft delete uchun)
-        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
-        modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
-        modelBuilder.Entity<Order>().HasQueryFilter(o => !o.IsDeleted);
+            entity.Property(sw => sw.Balance)
+                .HasDefaultValue(0)
+                .HasColumnType("decimal(18,2)");
 
-        // Indexlar
-        modelBuilder.Entity<Product>()
-            .HasIndex(p => p.Name);
+            entity.HasQueryFilter(sw => !sw.IsDeleted);
+        });
 
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+        // User configuration
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasOne(u => u.Address)
+                .WithMany()
+                .HasForeignKey(u => u.AddressId)
+                .IsRequired(false);
+
+            // TPH (Table-Per-Hierarchy) konfiguratsiyasi
+            entity.HasDiscriminator<string>("UserType")
+                .HasValue<User>("User")
+                .HasValue<DeliveryPerson>("DeliveryPerson");
+
+            // DeliveryPerson uchun alohida filter emas, balki umumiy User filteri
+            entity.HasQueryFilter(u => !u.IsDeleted);
+
+            entity.HasIndex(u => u.Email).IsUnique();
+            entity.HasIndex(u => u.PhoneNumber).IsUnique();
+            entity.Property(u => u.Role).HasConversion<string>();
+        });
+
+        // DeliveryPerson uchun alohida query filter OLIB TASHLANDI
+        // Chunki u User jadvalidan meros oladi va faqat root entity (User) uchun filter qo'llash mumkin
+
+        // WithdrawHistory configuration
+        modelBuilder.Entity<WithdrawHistory>(entity =>
+        {
+            entity.HasQueryFilter(wh => !wh.IsDeleted);
+        });
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Darmon.Domain.Entities.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Darmon.Application.DTOs;
+namespace Darmon.Application.DTOs.User;
 
 public class UserRequestDto
 {
@@ -22,4 +23,7 @@ public class UserRequestDto
     public string Email { get; set; }
 
     public string Password { get; set; }
+    [Required(ErrorMessage = "Phone number is required")]
+    public string PhoneNumber { get; set; }
+    public UserRole Role { get; set; }
 }

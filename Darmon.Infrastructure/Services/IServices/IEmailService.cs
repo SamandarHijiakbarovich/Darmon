@@ -10,4 +10,6 @@ public interface IEmailService
 {
     Task SendEmailAsync(string toEmail, string subject, string htmlContent);
     Task SendEmailWithAttachmentsAsync(string toEmail, string subject, string htmlContent, byte[] attachment, string fileName);
+    Task SendWelcomeEmailAsync(string email, string firstName); // Yangi method
+    Task SendPasswordResetEmailAsync(string email, string resetToken); // Yangi method
 }

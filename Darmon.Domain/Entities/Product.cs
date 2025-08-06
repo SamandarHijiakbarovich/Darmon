@@ -26,6 +26,6 @@ public class Product:AuditableEntity
 
         public ICollection<ProductImage> Images { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
-    public ICollection<ProductReview> Reviews { get; set; }
+        public ICollection<ProductReview> Reviews { get; set; }
 
 }
