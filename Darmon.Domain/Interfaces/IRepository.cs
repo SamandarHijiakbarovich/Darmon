@@ -9,6 +9,8 @@ namespace Darmon.Domain.Interfaces;
 
 public interface IRepository<T> where T : class
 {
+
+     IQueryable<T> GetAll();
     // Create
     Task AddAsync(T entity);
 

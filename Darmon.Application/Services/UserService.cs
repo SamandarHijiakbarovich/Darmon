@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Darmon.Application.DTOs;
 using Darmon.Application.DTOs.AuthResponse;
+using Darmon.Application.DTOs.PagedDto;
 using Darmon.Application.DTOs.User;
 using Darmon.Application.Interfaces;
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Enums;
 using Darmon.Domain.Interfaces;
 using Darmon.Infrastructure.Services.IServices;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Crypto.Generators;
 using System;
@@ -54,12 +56,24 @@ public class UserService : IUserService
         return await _userRepository.SaveChangesAsync() > 0;
     }
 
-    public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
+    public async Task<PagedResult<UserResponseDto>> GetAllUsersAsync(PaginationParams pagination)
     {
-        var users = await _userRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<UserResponseDto>>(users);
-    }
+        var query = _userRepository.GetAll();
 
+        var totalCount = await query.CountAsync();
+        var users = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync();
+
+        return new PagedResult<UserResponseDto>
+        {
+            Items = _mapper.Map<List<UserResponseDto>>(users),
+            TotalCount = totalCount,
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize
+        };
+    }
     public async Task<UserResponseDto> ChangeUserRoleAsync(int userId, UserRole newRole)
     {
         var user = await _userRepository.GetByIdAsync(userId);
@@ -68,5 +82,5 @@ public class UserService : IUserService
         return _mapper.Map<UserResponseDto>(user);
     }
 
-
+    
 }

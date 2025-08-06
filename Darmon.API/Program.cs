@@ -1,4 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using Darmon.Infrastructure.Data;
 using Darmon.Application.Mappings;
@@ -11,6 +15,7 @@ using Darmon.Infrastructure.Services.IServices;
 using Darmon.Infrastructure.SettingModels;
 using Darmon.Application.DTOs.Configurations;
 using Darmon.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,17 +23,53 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. CONFIGURATION SETUP
 // =============================================
 var configuration = builder.Configuration;
+var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
 // =============================================
 // 2. SERVICE REGISTRATION
 // =============================================
 
 // 2.1. CORE SERVICES
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Darmon API", Version = "v1" });
+    c.UseInlineDefinitionsForEnums();
+    c.SchemaGeneratorOptions = new SchemaGeneratorOptions
+    {
+        UseAllOfToExtendReferenceSchemas = false
+    };
+
+    // 🔐 Swagger uchun JWT qo‘llab-quvvatlash
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token."
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 // 2.2. DATABASE CONFIGURATION
@@ -51,8 +92,30 @@ builder.Services.AddSingleton<IPasswordHasherService>(
     _ => new BCryptPasswordHasher(workFactor: 11));
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
-// 2.7. EXTERNAL SERVICES CONFIGURATION
+// 2.7. JWT AUTHENTICATION CONFIGURATION
 builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+    };
+});
+
+// 2.8. EXTERNAL SERVICES CONFIGURATION
 builder.Services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
 builder.Services.Configure<SmsSettings>(configuration.GetSection("SmsSettings"));
 
@@ -75,7 +138,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Darmon API V1");
-        c.RoutePrefix = string.Empty; // Makes Swagger UI available at root
+        c.RoutePrefix = string.Empty;
     });
 }
 
