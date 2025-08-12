@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {}
+    "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {}
   },
   "projects": {
-    "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj": {
+    "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj",
+        "projectUniqueName": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj",
         "projectName": "Darmon.Domain",
-        "projectPath": "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj",
-        "packagesPath": "C:\\Users\\Samandar\\.nuget\\packages\\",
-        "outputPath": "D:\\Darmon\\Darmon.Domain\\obj\\",
+        "projectPath": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "D:\\ProjectDarmon\\Darmon.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Samandar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -72,24 +71,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {
+    "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
+        "projectUniqueName": "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
         "projectName": "Darmon.Infrastructure",
-        "projectPath": "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Samandar\\.nuget\\packages\\",
-        "outputPath": "D:\\Darmon\\Darmon.Infrastructure\\obj\\",
+        "projectPath": "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "D:\\ProjectDarmon\\Darmon.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Samandar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -98,15 +97,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj": {
-                "projectPath": "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj"
+              "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj": {
+                "projectPath": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj"
               }
             }
           }
@@ -121,7 +119,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -204,7 +202,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
