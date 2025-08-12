@@ -85,9 +85,11 @@ public class AuthService : IAuthService
 
         user.ResetToken = Guid.NewGuid().ToString();
         user.ResetTokenExpires = DateTime.UtcNow.AddHours(1);
-        await _userRepository.SaveChangesAsync();
 
-        await _emailService.SendPasswordResetEmailAsync(email, user.ResetToken);
+		await _userRepository.UpdateAsync(user);
+		await _userRepository.SaveChangesAsync();
+
+		await _emailService.SendPasswordResetEmailAsync(email, user.ResetToken);
     }
 
     public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetDto)
