@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc304c7db4b2ded91f670ed53274084fc4b789b9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2dc5809ad7f767da0b460099dcbcacb9268c030")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

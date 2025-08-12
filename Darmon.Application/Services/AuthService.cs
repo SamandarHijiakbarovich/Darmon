@@ -129,7 +129,6 @@ public class AuthService : IAuthService
         user.RefreshToken = newRefreshToken;
         user.RefreshTokenExpires = _tokenService.GetRefreshTokenExpiration();
 
-		await _userRepository.UpdateAsync(user);
 		await _userRepository.SaveChangesAsync();
 
 		// 4. Yangi tokenlarni qaytarish
