@@ -69,10 +69,16 @@ public class AuthService : IAuthService
         if (user == null || !_passwordHasher.VerifyPassword(loginDto.Password, user.PasswordHash))
             throw new ApplicationException("Email yoki parol noto'g'ri");
 
-        return new AuthResponse(
+		user.RefreshToken = _tokenService.GenerateRefreshToken();
+		user.RefreshTokenExpires = DateTime.UtcNow.AddHours(1);
+
+		await _userRepository.UpdateAsync(user);
+		await _userRepository.SaveChangesAsync();
+
+		return new AuthResponse(
     accessToken: _tokenService.GenerateAccessToken(user),
     expiresAt: _tokenService.GetAccessTokenExpiration(),
-    refreshToken: _tokenService.GenerateRefreshToken(),
+    refreshToken: user.RefreshToken,
     user: _mapper.Map<UserResponseDto>(user)
 );
     }
