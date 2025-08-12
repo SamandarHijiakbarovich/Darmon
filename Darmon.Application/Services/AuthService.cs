@@ -128,10 +128,12 @@ public class AuthService : IAuthService
         // 3. Yangi refresh tokenni bazaga saqlash
         user.RefreshToken = newRefreshToken;
         user.RefreshTokenExpires = _tokenService.GetRefreshTokenExpiration();
-        await _userRepository.SaveChangesAsync();
 
-        // 4. Yangi tokenlarni qaytarish
-        return new AuthResponse(
+		await _userRepository.UpdateAsync(user);
+		await _userRepository.SaveChangesAsync();
+
+		// 4. Yangi tokenlarni qaytarish
+		return new AuthResponse(
             newAccessToken,
             _tokenService.GetAccessTokenExpiration(),
             newRefreshToken,
