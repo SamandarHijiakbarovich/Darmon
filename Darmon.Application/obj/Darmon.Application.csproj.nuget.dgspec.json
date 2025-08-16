@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ProjectDarmon\\Darmon.Application\\Darmon.Application.csproj": {}
+    "D:\\Darmon\\Darmon.Application\\Darmon.Application.csproj": {}
   },
   "projects": {
-    "D:\\ProjectDarmon\\Darmon.Application\\Darmon.Application.csproj": {
+    "D:\\Darmon\\Darmon.Application\\Darmon.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ProjectDarmon\\Darmon.Application\\Darmon.Application.csproj",
+        "projectUniqueName": "D:\\Darmon\\Darmon.Application\\Darmon.Application.csproj",
         "projectName": "Darmon.Application",
-        "projectPath": "D:\\ProjectDarmon\\Darmon.Application\\Darmon.Application.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\ProjectDarmon\\Darmon.Application\\obj\\",
+        "projectPath": "D:\\Darmon\\Darmon.Application\\Darmon.Application.csproj",
+        "packagesPath": "C:\\Users\\Samandar\\.nuget\\packages\\",
+        "outputPath": "D:\\Darmon\\Darmon.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Samandar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,17 +26,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj": {
-                "projectPath": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj"
+              "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj": {
+                "projectPath": "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj"
               },
-              "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {
-                "projectPath": "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj"
+              "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {
+                "projectPath": "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj"
               }
             }
           }
@@ -51,7 +52,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -82,24 +83,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj": {
+    "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj",
+        "projectUniqueName": "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj",
         "projectName": "Darmon.Domain",
-        "projectPath": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\ProjectDarmon\\Darmon.Domain\\obj\\",
+        "projectPath": "D:\\Darmon\\Darmon.Domain\\Darmon.Domain.csproj",
+        "packagesPath": "C:\\Users\\Samandar\\.nuget\\packages\\",
+        "outputPath": "D:\\Darmon\\Darmon.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Samandar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -108,6 +109,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -126,7 +128,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -153,24 +155,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {
+    "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
+        "projectUniqueName": "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
         "projectName": "Darmon.Infrastructure",
-        "projectPath": "D:\\ProjectDarmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\ProjectDarmon\\Darmon.Infrastructure\\obj\\",
+        "projectPath": "D:\\Darmon\\Darmon.Infrastructure\\Darmon.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Samandar\\.nuget\\packages\\",
+        "outputPath": "D:\\Darmon\\Darmon.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Samandar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -179,16 +181,13 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
-            "projectReferences": {
-              "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj": {
-                "projectPath": "D:\\ProjectDarmon\\Darmon.Domain\\Darmon.Domain.csproj"
-              }
-            }
+            "projectReferences": {}
           }
         },
         "warningProperties": {
@@ -201,73 +200,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "dependencies": {
-            "BCrypt.Net-Next": {
-              "target": "Package",
-              "version": "[4.0.3, )"
-            },
-            "ClickSendApi.Client": {
-              "target": "Package",
-              "version": "[0.3.0, )"
-            },
-            "MailKit": {
-              "target": "Package",
-              "version": "[4.13.0, )"
-            },
-            "Microsoft.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
-            "Microsoft.EntityFrameworkCore.Design": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
-            "Microsoft.EntityFrameworkCore.SqlServer": {
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
-            "Microsoft.Extensions.DependencyInjection": {
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
-            "Microsoft.Extensions.Http": {
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
-            "MimeKit": {
-              "target": "Package",
-              "version": "[4.13.0, )"
-            },
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.3, )"
-            },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
-              "target": "Package",
-              "version": "[9.0.4, )"
-            },
-            "System.IdentityModel.Tokens.Jwt": {
-              "target": "Package",
-              "version": "[8.13.0, )"
-            },
-            "Twilio": {
-              "target": "Package",
-              "version": "[7.12.0, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
@@ -284,7 +221,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

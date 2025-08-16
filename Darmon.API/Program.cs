@@ -81,11 +81,14 @@ builder.Services.AddAutoMapper(typeof(MappingProfil));
 
 // 2.4. REPOSITORY LAYER
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // 2.5. APPLICATION SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductService, ProductService>(); 
 
 // 2.6. AUTHENTICATION SERVICES
 builder.Services.AddSingleton<IPasswordHasherService>(

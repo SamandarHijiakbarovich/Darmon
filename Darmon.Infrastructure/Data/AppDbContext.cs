@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
 using Darmon.Domain.Entities.Enums;
+using Darmon.Infrastructure.Data.Configurations;
 
 namespace Darmon.Infrastructure.Data;
 
@@ -27,6 +28,7 @@ public class AppDbContext : DbContext
     public DbSet<Delivery> Deliveries { get; set; }
     public DbSet<DeliveryPerson> DeliveryPeople { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<GatewayTransaction> GatewayTransactions { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Payment> Payments { get; set; }
@@ -41,6 +43,8 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new GatewayTransactionConfiguration());
 
         // Address configuration
         modelBuilder.Entity<Address>(entity =>
@@ -138,7 +142,7 @@ public class AppDbContext : DbContext
             entity.HasQueryFilter(oi => !oi.IsDeleted);
         });
 
-        // Payment configuration
+      /*  // Payment configuration
         modelBuilder.Entity<Payment>(entity =>
         {
             entity.HasOne(p => p.PaymentTransaction)
@@ -150,7 +154,7 @@ public class AppDbContext : DbContext
 
             entity.HasQueryFilter(p => !p.IsDeleted);
         });
-
+*/
         // Product configuration
         modelBuilder.Entity<Product>(entity =>
         {

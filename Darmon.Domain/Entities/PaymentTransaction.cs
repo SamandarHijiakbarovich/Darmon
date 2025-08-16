@@ -1,13 +1,35 @@
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
+using Darmon.Domain.Entities.Enums;
+
 
 public class PaymentTransaction : BaseEntity
 {
-    public string GatewayTransactionId { get; set; }
-    public string GatewayName { get; set; }
-    public bool IsSuccess { get; set; }
-    public string ErrorMessage { get; set; }
-    
-    public int PaymentId { get; set; }
-    public Payment Payment { get; set; }
+    public decimal Amount { get; set; }
+
+    public string InternalTraceId { get; private set; } = Guid.NewGuid().ToString();
+
+    public TransactionStatus Status { get; set; }
+
+    public string? ClientRedirectUrl { get; set; }
+
+    public string? CallbackUrl { get; set; }
+
+    public string? ErrorMessage { get; set; }
+
+    public string? GatewaySessionId { get; set; }
+
+    // Relations
+    public Guid PaymentId { get; set; }
+
+    public Payment Payment { get; set; } = default!;
+
+    public ICollection<ClickTransaction> GatewayTransactions { get; set; } = new List<ClickTransaction>();
+
+    // Helper methods
+    public bool CanRetry(int retryWindowMinutes = 60)
+        => Status == TransactionStatus.Failed &&
+           CreatedAt.AddMinutes(retryWindowMinutes) > DateTime.UtcNow;
 }
+
+
