@@ -57,6 +57,7 @@ public class Repository<T>:IRepository<T> where T:class
         var entity = await GetByIdAsync(id);
         if (entity != null)
             await DeleteAsync(entity);
+
     }
 
     // EXISTS
