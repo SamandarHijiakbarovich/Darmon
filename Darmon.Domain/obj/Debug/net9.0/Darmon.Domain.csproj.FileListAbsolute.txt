@@ -11,3 +11,16 @@ D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.dll
 D:\Darmon\Darmon.Domain\obj\Debug\net9.0\refint\Darmon.Domain.dll
 D:\Darmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.pdb
 D:\Darmon\Darmon.Domain\obj\Debug\net9.0\ref\Darmon.Domain.dll
+D:\ProjectDarmon\Darmon.Domain\bin\Debug\net9.0\Darmon.Domain.deps.json
+D:\ProjectDarmon\Darmon.Domain\bin\Debug\net9.0\Darmon.Domain.dll
+D:\ProjectDarmon\Darmon.Domain\bin\Debug\net9.0\Darmon.Domain.pdb
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.csproj.AssemblyReference.cache
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.AssemblyInfoInputs.cache
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.AssemblyInfo.cs
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.csproj.CoreCompileInputs.cache
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.sourcelink.json
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.dll
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\refint\Darmon.Domain.dll
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\Darmon.Domain.pdb
+D:\ProjectDarmon\Darmon.Domain\obj\Debug\net9.0\ref\Darmon.Domain.dll
