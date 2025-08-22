@@ -23,49 +23,69 @@ public class PaymentTransactionService : IPaymentTransactionService
         _mapper = mapper;
     }
 
-    public async Task<PaymentTransactionDto> InitTransactionAsync(InitTransactionDto dto)
+    public async Task<PaymentTransaction> CreateTransactionAsync(PaymentTransactionDto dto)
     {
-        var transaction = _mapper.Map<PaymentTransaction>(dto);
-        transaction.Status = TransactionStatus.Created;
-        transaction.InternalTraceId = Guid.NewGuid().ToString();
-        transaction.CreatedAt = DateTime.UtcNow;
+        var entity = _mapper.Map<PaymentTransaction>(dto);
+        entity.Status = TransactionStatus.Created;
+        entity.CreatedAt = DateTime.UtcNow;
 
-        await _repository.AddAsync(transaction);
+        await _repository.AddAsync(entity);
         await _repository.SaveChangesAsync();
-        return _mapper.Map<PaymentTransactionDto>(transaction);
+        return entity;
     }
 
-    public async Task<PaymentTransactionDto> GetTransactionAsync(int id)
+    public async Task<PaymentTransactionDto> GetTransactionByIdAsync(Guid id)
     {
-        var transaction = await _repository.GetByIdAsync(id);
-        return transaction == null ? null : _mapper.Map<PaymentTransactionDto>(transaction);
+        var entity = await _repository.GetByIdAsync(id);
+        return entity == null ? null : _mapper.Map<PaymentTransactionDto>(entity);
     }
 
-    public async Task<PaymentTransactionDto> RetryTransactionAsync(RetryTransactionDto dto)
+    public async Task<PaymentTransactionDto> UpdateTransactionAsync(PaymentTransactionDto dto)
     {
-        var existingTransaction = await _repository.GetByIdAsync(dto.TransactionId);
-        if (existingTransaction == null)
+        var entity = await _repository.GetByIdAsync(dto.Id);
+        if (entity == null)
             return null;
 
-        existingTransaction.Status = TransactionStatus.Retry;
-        existingTransaction.UpdatedAt = DateTime.UtcNow;
+        _mapper.Map(dto, entity);
+        entity.UpdatedAt = DateTime.UtcNow;
 
-        await _repository.UpdateAsync(existingTransaction);
-        return _mapper.Map<PaymentTransactionDto>(existingTransaction);
+        await _repository.UpdateAsync(entity);
+        await _repository.SaveChangesAsync();
+        return _mapper.Map<PaymentTransactionDto>(entity);
     }
 
-    public async Task HandleCallbackAsync(GatewayCallbackDto dto)
+    public async Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByPaymentIdAsync(Guid paymentId)
     {
-        var transaction = await _repository.GetByInternalTraceIdAsync(dto.InternalTraceId);
-        if (transaction == null)
-            return;
+        var entities = await _repository.GetByPaymentIdAsync(paymentId);
+        return _mapper.Map<IEnumerable<PaymentTransactionDto>>(entities);
+    }
 
-        transaction.Status = dto.Status;
-        transaction.UpdatedAt = DateTime.UtcNow;
+    public async Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByStatusAsync(TransactionStatus status, int pageNumber = 1, int pageSize = 10)
+    {
+        var entities = await _repository.GetByStatusAsync(status, pageNumber, pageSize);
+        return _mapper.Map<IEnumerable<PaymentTransactionDto>>(entities);
+    }
 
-        // Map gateway response details
-        _mapper.Map(dto, transaction);
+    public async Task<PaymentTransactionDto> GetByInternalTraceIdAsync(string internalTraceId)
+    {
+        var entity = await _repository.GetByInternalTraceIdAsync(internalTraceId);
+        return entity == null ? null : _mapper.Map<PaymentTransactionDto>(entity);
+    }
 
-        await _repository.UpdateAsync(transaction);
+    public async Task<bool> DeleteTransactionAsync(Guid id)
+    {
+        var entity = await _repository.GetByIdAsync(id);
+        if (entity == null)
+            return false;
+
+        await _repository.DeleteAsync(entity);
+        await _repository.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task GetAllAsync()
+    {
+        var entities = await _repository.GetAllAsync();
+        // You can return or log them if needed
     }
 }

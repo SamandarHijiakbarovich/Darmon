@@ -54,7 +54,7 @@ public class PaymentTransactionRepository : Repository<PaymentTransaction>, IPay
 
             if (includeGateway)
             {
-                query = query.Include(t => t.GatewayTransactions);
+                query = query.Include(t => t.ClickTransactions);
             }
 
             return await query.FirstOrDefaultAsync(t => t.PaymentId == id);
@@ -103,7 +103,7 @@ public class PaymentTransactionRepository : Repository<PaymentTransaction>, IPay
 
             if (includeGateway)
             {
-                query = query.Include(t => t.GatewayTransactions);
+                query = query.Include(t => t.ClickTransactions);
             }
 
             return await query

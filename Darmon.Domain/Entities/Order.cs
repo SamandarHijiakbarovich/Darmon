@@ -15,6 +15,10 @@ public class Order : AuditableEntity
     public decimal TotalAmount { get; set; }
     public OrderStatus Status { get; set; }
 
+    public int CourierId { get; set; }
+    public Courier Courier { get; set; }
+
+
     // Relations
     public int UserId { get; set; }
     public User User { get; set; }

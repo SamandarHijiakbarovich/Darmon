@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.IntegrationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc304c7db4b2ded91f670ed53274084fc4b789b9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e405fecfc2575eb1093d270dc85a800ca28601d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.IntegrationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.IntegrationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

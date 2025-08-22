@@ -70,27 +70,6 @@ public class MappingProfil : Profile
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
 
-        // Add to your existing MappingProfile.cs
-        CreateMap<Payment, PaymentDto>()
-            .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Currency ?? "UZS"))
-            .ForMember(dest => dest.Transactions, opt => opt.MapFrom(src => src.Transactions))
-            .ReverseMap();
-
-        CreateMap<CreatePaymentDto, Payment>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => PaymentStatus.Pending))
-            .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Currency ?? "UZS"));
-
-        CreateMap<UpdatePaymentStatusDto, Payment>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Reason));
-
-        // Payment Transaction mappings
-        CreateMap<PaymentTransaction, PaymentTransactionDto>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-            .ReverseMap();
-
-        CreateMap<InitTransactionDto, PaymentTransaction>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => TransactionStatus.Created))
-            .ForMember(dest => dest.InternalTraceId, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()));
+       
     }
 }

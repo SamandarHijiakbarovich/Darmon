@@ -11,8 +11,8 @@ public class Delivery:AuditableEntity
     public int AddressId { get; set; }
     public Address DeliveryAddress { get; set; }
 
-    public int? DeliveryPersonId { get; set; }
-    public DeliveryPerson? DeliveryPerson { get; set; } // <-- TO'G'RI
+    public int? CourierId { get; set; }
+    public Courier? Courier { get; set; } // <-- TO'G'RI
 
     public int OrderId { get; set; }
     public Order Order { get; set; } // <-- TO'G'RI

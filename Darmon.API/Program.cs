@@ -16,6 +16,9 @@ using Darmon.Infrastructure.SettingModels;
 using Darmon.Application.DTOs.Configurations;
 using Darmon.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Darmon.Application.Services.Click;
+using Darmon.Infrastructure.Click;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +97,11 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddSingleton<IPasswordHasherService>(
     _ => new BCryptPasswordHasher(workFactor: 11));
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+
+builder.Services.Configure<ClickSettings>(builder.Configuration.GetSection("ClickSettings"));
+builder.Services.AddHttpClient<IClickApiClient, ClickApiClient>();
+builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
+
 
 // 2.7. JWT AUTHENTICATION CONFIGURATION
 builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));

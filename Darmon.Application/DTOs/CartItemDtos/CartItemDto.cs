@@ -15,4 +15,7 @@ public class CartItemDto
 
     public int UserId { get; set; }
     public int Quantity { get; set; }
+    public int TotalItems { get; internal set; }
+    public decimal TotalPrice { get; internal set; }
+    public List<CartItemDto> Items { get; internal set; }
 }

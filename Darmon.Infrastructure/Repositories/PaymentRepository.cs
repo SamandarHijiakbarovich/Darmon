@@ -30,8 +30,8 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
 
             if (includeRelated)
             {
-                query = query.Include(p => p.Transactions)
-                             .ThenInclude(t => t.GatewayTransactions)
+                query = query.Include(p => p.PaymentTransactions)
+                             .ThenInclude(t => t.ClickTransactions)
                            .Include(p => p.Order);
             }
 
@@ -52,7 +52,7 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
 
             if (includeRelated)
             {
-                query = query.Include(p => p.Transactions)
+                query = query.Include(p => p.PaymentTransactions)
                            .Include(p => p.Order);
             }
 

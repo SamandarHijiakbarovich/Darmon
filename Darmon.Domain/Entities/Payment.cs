@@ -20,10 +20,10 @@ public class Payment : AuditableEntity
     public Guid OrderId { get; set; }
     public Order Order { get; set; } = default!;
 
-    public ICollection<PaymentTransaction> Transactions { get; set; } = new List<PaymentTransaction>();
+    public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
 
     // Helper properties
     public bool IsExpired => ExpirationDate.HasValue && ExpirationDate < DateTime.UtcNow;
-    public PaymentTransaction? LastTransaction => Transactions.OrderByDescending(t => t.CreatedAt).FirstOrDefault();
+    public PaymentTransaction? LastTransaction => PaymentTransactions.OrderByDescending(t => t.CreatedAt).FirstOrDefault();
 }
 

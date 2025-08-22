@@ -24,7 +24,7 @@ public class PaymentTransaction : BaseEntity
 
     public Payment Payment { get; set; } = default!;
 
-    public ICollection<ClickTransaction> GatewayTransactions { get; set; } = new List<ClickTransaction>();
+    public ClickTransaction ClickTransactions { get; set; } 
 
     // Helper methods
     public bool CanRetry(int retryWindowMinutes = 60)

@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-public class Courier: BaseEntity
+public class Courier: User
 {
-    
-    public string FullName { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
+    public string FullName { get; set; }
+    public string VehicleNumber { get; set; }
+    public bool IsAvailable { get; set; }
+    public VehicleType VehicleType { get; set; }
 
-    public ICollection<Order> Orders { get; set; } = new List<Order>();
+    public ICollection<Order> Orders { get; set; }
+    public ICollection<Delivery> Deliveries { get; set; }
 }

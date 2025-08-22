@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "RWu/8AWZMPs=",
+  "dgSpecHash": "guG8a9W/A/g=",
   "success": true,
   "projectFilePath": "D:\\Darmon\\tests\\Darmon.UnitTests\\Darmon.UnitTests.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Samandar\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Samandar\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\Samandar\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\Samandar\\.nuget\\packages\\fluentassertions\\8.5.0\\fluentassertions.8.5.0.nupkg.sha512",
