@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darmon.API", "Darmon.API\Darmon.API.csproj", "{7F497260-2893-4EB9-B061-32115AE32642}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darmon.Application", "Darmon.Application\Darmon.Application.csproj", "{F6EC1BAC-6359-4F2F-9908-EBE3F9493CAE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0633A633-3BC8-4D5E-A0B6-FF19EABEBDB4} = {0633A633-3BC8-4D5E-A0B6-FF19EABEBDB4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darmon.Domain", "Darmon.Domain\Darmon.Domain.csproj", "{0633A633-3BC8-4D5E-A0B6-FF19EABEBDB4}"
 EndProject
@@ -106,5 +109,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{93B2593D-ED82-46B0-B7F1-6C0DAD507C6D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{044A7704-0878-473E-B7D8-E8AECFE9F494} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {651A5AF8-491D-4309-BF8C-369675BFFA44}
 	EndGlobalSection
 EndGlobal

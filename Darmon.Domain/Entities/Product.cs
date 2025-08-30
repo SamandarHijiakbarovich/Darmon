@@ -24,6 +24,8 @@ public class Product:AuditableEntity
         public int? BranchId { get; set; }
         public Branch? Branch { get; set; }
 
+        
+        public ICollection<CartItem> CartItems { get; set; }
         public ICollection<ProductImage> Images { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
         public ICollection<ProductReview> Reviews { get; set; }

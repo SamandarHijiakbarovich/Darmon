@@ -1,8 +1,11 @@
 public enum DeliveryStatus
 {
-    Pending,
-    Assigned,
-    InTransit,
-    Delivered,
-    Failed
+    Pending,        // Buyurtma yaratilgan
+    Accepted,       // Kuryer tomonidan qabul qilingan
+    Preparing,      // Tayyorlanmoqda
+    OnTheWay,       // Yo‘lda
+    Arrived,        // Yetib kelgan (lekin hali topshirilmagan)
+    Delivered,      // Yetkazilgan
+    Failed,         // Yetkazib bo‘lmagan
+    Cancelled       // Buyurtma bekor qilingan
 }
