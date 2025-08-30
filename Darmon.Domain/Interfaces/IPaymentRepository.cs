@@ -51,7 +51,7 @@ public interface IPaymentRepository:IRepository<Payment>
     /// </summary>
     /// <param name="orderId">Order ID</param>
     /// <returns>List of payments for the order</returns>
-    Task<IEnumerable<Payment>> GetByOrderIdAsync(Guid orderId);
+    Task<IEnumerable<Payment>> GetByOrderIdAsync(int orderId);
 
 
 }

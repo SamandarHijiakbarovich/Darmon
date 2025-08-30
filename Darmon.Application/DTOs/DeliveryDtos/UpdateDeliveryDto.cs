@@ -14,4 +14,7 @@ public class UpdateDeliveryDto
     public string TrackingNumber { get; set; }
 
     public int? DeliveryPersonId { get; set; }
+
+ 
+    public string? Notes { get; set; }
 }

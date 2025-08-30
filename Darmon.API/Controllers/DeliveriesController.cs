@@ -1,16 +1,62 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Darmon.Application.DTOs.DeliveryDtos;
+using Darmon.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/deliveries")]
 [Authorize]
 public class DeliveriesController : ControllerBase
 {
+    private readonly IDeliveryService _deliveryService;
+
+    public DeliveriesController(IDeliveryService deliveryService)
+    {
+        _deliveryService = deliveryService;
+    }
+
+    // POST: api/deliveries
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateDelivery([FromBody] CreateDeliveryDto dto)
+    {
+        var delivery = await _deliveryService.CreateDeliveryAsync(dto);
+        return CreatedAtAction(nameof(GetDeliveryById), new { id = delivery.Id }, delivery);
+    }
+
+    // GET: api/deliveries/{id}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDeliveryById(int id)
+    {
+        var delivery = await _deliveryService.GetDeliveryByIdAsync(id);
+        return delivery != null ? Ok(delivery) : NotFound();
+    }
+
     // GET: api/deliveries/order/{orderId}
     [HttpGet("order/{orderId}")]
-    public async Task<IActionResult> GetDeliveryByOrder(int orderId)
+    public async Task<IActionResult> GetDeliveryByOrderId(int orderId)
     {
-        // Buyurtma bo'yicha yetkazib berish ma'lumotlari
+        var delivery = await _deliveryService.GetDeliveryByOrderIdAsync(orderId);
+        return delivery != null ? Ok(delivery) : NotFound();
+    }
+
+    // PUT: api/deliveries/{id}/status
+    [HttpPut("{id}/status")]
+    [Authorize(Roles = "Courier,Admin")]
+    public async Task<IActionResult> UpdateDeliveryStatus(int id, [FromBody] UpdateDeliveryDto dto)
+    {
+        var updated = await _deliveryService.UpdateDeliveryStatusAsync(id, dto);
+        return updated != null ? Ok(updated) : BadRequest("Statusni yangilab bo'lmadi.");
+    }
+
+    // POST: api/deliveries/{id}/assign-courier/{courierId}
+    [HttpPost("{id}/assign-courier/{courierId}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> AssignCourier(int id, int courierId)
+    {
+        var success = await _deliveryService.AssignCourierAsync(id, courierId);
+        return success ? NoContent() : BadRequest("Kurierni tayinlab bo'lmadi.");
     }
 
     // GET: api/deliveries/active
@@ -18,45 +64,15 @@ public class DeliveriesController : ControllerBase
     [Authorize(Roles = "Courier,Admin")]
     public async Task<IActionResult> GetActiveDeliveries()
     {
-        // Faol yetkazib berishlar
+        var deliveries = await _deliveryService.GetActiveDeliveriesAsync();
+        return Ok(deliveries);
     }
 
-    // GET: api/deliveries/my-deliveries
-    [HttpGet("my-deliveries")]
-    [Authorize(Roles = "Courier")]
-    public async Task<IActionResult> GetMyDeliveries()
+    // GET: api/deliveries/calculate-fee?addressId=1&branchId=2
+    [HttpGet("calculate-fee")]
+    public async Task<IActionResult> CalculateDeliveryFee([FromQuery] int addressId, [FromQuery] int branchId)
     {
-        // Kurierning o'z yetkazib berishlari
-    }
-
-    // PUT: api/deliveries/{id}/status
-    [HttpPut("{id}/status")]
-    [Authorize(Roles = "Courier,Admin")]
-    public async Task<IActionResult> UpdateDeliveryStatus(int id, [FromBody] UpdateDeliveryStatusDto dto)
-    {
-        // Yetkazib berish statusini yangilash
-    }
-
-    // GET: api/deliveries/{id}/track
-    [HttpGet("{id}/track")]
-    public async Task<IActionResult> TrackDelivery(int id)
-    {
-        // Yetkazib berishni kuzatish
-    }
-
-    // POST: api/deliveries/{id}/location
-    [HttpPost("{id}/location")]
-    [Authorize(Roles = "Courier")]
-    public async Task<IActionResult> UpdateDeliveryLocation(int id, [FromBody] LocationDto dto)
-    {
-        // Kurierning joylashuvini yangilash
-    }
-
-    // GET: api/deliveries/stats
-    [HttpGet("stats")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> GetDeliveryStats()
-    {
-        // Yetkazib berish statistikasi
+        var fee = await _deliveryService.CalculateDeliveryFeeAsync(addressId, branchId);
+        return Ok(new { Fee = fee });
     }
 }

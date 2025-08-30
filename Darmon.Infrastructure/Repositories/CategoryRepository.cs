@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Infrastructure.Repositories;
 
-internal class CategoryRepository:Repository<Category>, ICategoryRepository
+public class CategoryRepository:Repository<Category>, ICategoryRepository
 {
     private readonly AppDbContext _context;
 

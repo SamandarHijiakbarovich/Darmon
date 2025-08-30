@@ -10,80 +10,15 @@ using System.Threading.Tasks;
 
 namespace Darmon.Infrastructure.Repositories;
 
-public class DeliveryRepository : IDeliveryRepository
+public class DeliveryRepository : Repository<Delivery>, IDeliveryRepository
 {
     private readonly AppDbContext _context;
     private readonly ILogger<DeliveryRepository> _logger;
 
-    public DeliveryRepository(AppDbContext context, ILogger<DeliveryRepository> logger)
+    public DeliveryRepository(AppDbContext context, ILogger<DeliveryRepository> logger):base(context)
     {
         _context = context;
         _logger = logger;
-    }
-
-    public async Task<Delivery> AddAsync(Delivery delivery)
-    {
-        try
-        {
-            await _context.Deliveries.AddAsync(delivery);
-            await _context.SaveChangesAsync();
-            return delivery;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error adding delivery for order {OrderId}", delivery.OrderId);
-            throw;
-        }
-    }
-
-    public async Task<Delivery?> GetByIdAsync(int id)
-    {
-        try
-        {
-            return await _context.Deliveries
-                .Include(d => d.Order)
-                .Include(d => d.Courier)
-                .Include(d => d.DeliveryAddress)
-                .Include(d => d.StatusHistory)
-                .FirstOrDefaultAsync(d => d.Id == id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving delivery with ID {DeliveryId}", id);
-            throw;
-        }
-    }
-
-    public async Task UpdateAsync(Delivery delivery)
-    {
-        try
-        {
-            _context.Deliveries.Update(delivery);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating delivery with ID {DeliveryId}", delivery.Id);
-            throw;
-        }
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        try
-        {
-            var delivery = await GetByIdAsync(id);
-            if (delivery != null)
-            {
-                _context.Deliveries.Remove(delivery);
-                await _context.SaveChangesAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deleting delivery with ID {DeliveryId}", id);
-            throw;
-        }
     }
 
     public async Task<Delivery?> GetByOrderIdAsync(int orderId)
@@ -121,6 +56,7 @@ public class DeliveryRepository : IDeliveryRepository
         }
     }
 
+
     public async Task<List<Delivery>> GetByStatusAsync(DeliveryStatus status)
     {
         try
@@ -138,6 +74,8 @@ public class DeliveryRepository : IDeliveryRepository
             throw;
         }
     }
+
+
 
     public async Task<List<Delivery>> GetActiveDeliveriesAsync()
     {
@@ -159,6 +97,7 @@ public class DeliveryRepository : IDeliveryRepository
             throw;
         }
     }
+
 
     public async Task AddStatusHistoryAsync(DeliveryStatusHistory statusHistory)
     {
@@ -191,6 +130,7 @@ public class DeliveryRepository : IDeliveryRepository
         }
     }
 
+
     public async Task<int> GetCountByStatusAsync(DeliveryStatus status)
     {
         try
@@ -204,6 +144,7 @@ public class DeliveryRepository : IDeliveryRepository
             throw;
         }
     }
+
 
     public async Task<decimal> GetTotalDeliveryFeesAsync(DateTime startDate, DateTime endDate)
     {
@@ -220,18 +161,6 @@ public class DeliveryRepository : IDeliveryRepository
         }
     }
 
-    public async Task<bool> ExistsAsync(int id)
-    {
-        try
-        {
-            return await _context.Deliveries.AnyAsync(d => d.Id == id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error checking existence of delivery {DeliveryId}", id);
-            throw;
-        }
-    }
 
     public async Task<List<Delivery>> GetDeliveriesByDateRangeAsync(DateTime startDate, DateTime endDate)
     {

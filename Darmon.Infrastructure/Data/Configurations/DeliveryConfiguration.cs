@@ -30,20 +30,32 @@ namespace Darmon.Infrastructure.Data.Configurations
                   .HasMaxLength(50)
                   .IsRequired();
 
+            entity.Property(d => d.StatusHistory)
+                  .HasColumnType("text");
+
+            entity.Property(d => d.DeliveryFee)
+                  .HasColumnType("decimal(10,2)")
+                  .IsRequired();
+
             // Relationships
             entity.HasOne(d => d.DeliveryAddress)
                   .WithMany()
                   .HasForeignKey(d => d.AddressId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasOne(d => d.DeliveryPerson)
-                  .WithMany(dp => dp.Deliveries)
-                  .HasForeignKey(d => d.DeliveryPersonId)
+            entity.HasOne(d => d.Courier)
+                  .WithMany(c => c.Deliveries)
+                  .HasForeignKey(d => d.CourierId)
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(d => d.Order)
                   .WithOne(o => o.Delivery)
                   .HasForeignKey<Delivery>(d => d.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(d => d.StatusHistories)
+                  .WithOne()
+                  .HasForeignKey(sh => sh.DeliveryId)
                   .OnDelete(DeleteBehavior.Cascade);
 
             // Soft delete filter

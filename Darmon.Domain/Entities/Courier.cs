@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Entities;
 
-public class Courier: User
+public class Courier: AuditableEntity
 {
     public string FullName { get; set; }
     public string VehicleNumber { get; set; }

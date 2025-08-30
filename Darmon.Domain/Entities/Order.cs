@@ -26,6 +26,9 @@ public class Order : AuditableEntity
     public int? DeliveryId { get; set; }
     public Delivery? Delivery { get; set; }
 
+    public int BranchId { get; set; }
+    public Branch Branch { get; set; } = default!;
+
     public int? PaymentId { get; set; }
     public Payment? Payment { get; set; }
 

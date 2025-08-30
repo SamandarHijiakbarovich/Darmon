@@ -144,7 +144,7 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
         }
     }
 
-    public async Task<IEnumerable<Payment>> GetByOrderIdAsync(Guid orderId)
+    public async Task<IEnumerable<Payment>> GetByOrderIdAsync(int orderId)
     {
         try
         {

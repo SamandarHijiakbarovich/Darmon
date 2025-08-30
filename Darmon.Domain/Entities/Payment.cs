@@ -17,7 +17,7 @@ public class Payment : AuditableEntity
     public DateTime? ExpirationDate { get; set; }
 
     // Relations
-    public Guid OrderId { get; set; }
+    public int OrderId { get; set; }
     public Order Order { get; set; } = default!;
 
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();

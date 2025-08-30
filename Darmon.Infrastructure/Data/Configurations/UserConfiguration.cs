@@ -34,12 +34,18 @@ namespace Darmon.Infrastructure.Data.Configurations
                   .HasMaxLength(100)
                   .IsRequired();
 
+            entity.Property(u => u.Role)
+                  .HasConversion<int>()
+                  .IsRequired();
+
             entity.Property(u => u.PasswordHash)
                   .IsRequired();
 
-            entity.Property(u => u.Role)
-                  .HasConversion<int>() // Enum to int
-                  .IsRequired();
+            entity.Property(u => u.ResetToken)
+                  .HasMaxLength(100);
+
+            entity.Property(u => u.RefreshToken)
+                  .HasMaxLength(100);
 
             // Relationships
             entity.HasOne(u => u.Address)
@@ -48,9 +54,9 @@ namespace Darmon.Infrastructure.Data.Configurations
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(u => u.SellerWallet)
-                  .WithOne(sw => sw.User)
+                  .WithOne()
                   .HasForeignKey<SellerWallet>(sw => sw.UserId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                  .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(u => u.Orders)
                   .WithOne(o => o.User)
@@ -72,7 +78,7 @@ namespace Darmon.Infrastructure.Data.Configurations
                   .HasForeignKey(ci => ci.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            // Soft delete filter (if AuditableEntity includes IsDeleted)
+            // Soft delete filter
             entity.HasQueryFilter(u => !u.IsDeleted);
 
         }

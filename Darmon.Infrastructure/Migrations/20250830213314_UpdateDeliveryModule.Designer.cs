@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Darmon.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250805095538_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250830213314_UpdateDeliveryModule")]
+    partial class UpdateDeliveryModule
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,36 +36,42 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<int?>("BranchId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("BranchId1")
-                        .HasColumnType("integer");
-
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HouseNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Landmark")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
-                    b.Property<double>("Latitude")
+                    b.Property<double?>("Latitude")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Longitude")
+                    b.Property<double?>("Longitude")
                         .HasColumnType("double precision");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -73,17 +79,9 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId")
-                        .IsUnique();
-
-                    b.HasIndex("BranchId1");
-
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
@@ -109,19 +107,34 @@ namespace Darmon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<TimeSpan>("OpeningTime")
                         .HasColumnType("interval");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -130,6 +143,9 @@ namespace Darmon.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
                     b.ToTable("Branches");
                 });
@@ -151,18 +167,21 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -173,6 +192,155 @@ namespace Darmon.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Darmon.Domain.Entities.ClickTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ErrorCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PaymentTransactionId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ProviderTimestamp")
+                        .HasColumnType("timestamp");
+
+                    b.Property<string>("ProviderTransactionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("RawRequest")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RawResponse")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TraceId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentTransactionId")
+                        .IsUnique();
+
+                    b.ToTable("ClickTransactions");
+                });
+
+            modelBuilder.Entity("Darmon.Domain.Entities.Courier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VehicleNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("VehicleType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Couriers");
+                });
+
+            modelBuilder.Entity("Darmon.Domain.Entities.DeliveryStatusHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ChangedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DeliveryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangedById");
+
+                    b.HasIndex("DeliveryId");
+
+                    b.ToTable("DeliveryStatusHistories");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Enums.CartItem", b =>
@@ -225,6 +393,12 @@ namespace Darmon.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CourierId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -240,18 +414,17 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int?>("PaymentId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -264,10 +437,12 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderNumber")
-                        .IsUnique();
+                    b.HasIndex("BranchId");
 
-                    b.HasIndex("Status");
+                    b.HasIndex("CourierId");
+
+                    b.HasIndex("DeliveryId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -294,14 +469,11 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ProductId1")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -312,21 +484,17 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductId1");
-
                     b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Payment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -335,23 +503,30 @@ namespace Darmon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasDefaultValue("UZS");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Method")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -390,7 +565,8 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -400,10 +576,11 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
@@ -419,8 +596,6 @@ namespace Darmon.Infrastructure.Migrations
                     b.HasIndex("BranchId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("Name");
 
                     b.ToTable("Products");
                 });
@@ -438,7 +613,8 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -468,9 +644,7 @@ namespace Darmon.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Balance")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -484,10 +658,15 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("UserId1")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
                         .IsUnique();
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("SellerWallets");
                 });
@@ -538,20 +717,21 @@ namespace Darmon.Infrastructure.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("RefreshTokenExpires")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ResetToken")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("ResetTokenExpires")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -559,26 +739,11 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text");
 
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
                     b.ToTable("Users");
-
-                    b.HasDiscriminator<string>("UserType").HasValue("User");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.WithdrawHistory", b =>
@@ -590,11 +755,12 @@ namespace Darmon.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("BankAccount")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -639,6 +805,9 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CourierId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -646,8 +815,8 @@ namespace Darmon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("DeliveryPersonId")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("DeliveryFee")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("EstimatedDeliveryTime")
                         .HasColumnType("timestamp with time zone");
@@ -658,13 +827,17 @@ namespace Darmon.Infrastructure.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("StatusHistory")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TrackingNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -676,10 +849,7 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("DeliveryPersonId");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("CourierId");
 
                     b.ToTable("Deliveries");
                 });
@@ -726,28 +896,39 @@ namespace Darmon.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("CallbackUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ClientRedirectUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ErrorMessage")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
-                    b.Property<string>("GatewayName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<string>("GatewaySessionId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
-                    b.Property<string>("GatewayTransactionId")
+                    b.Property<string>("InternalTraceId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsSuccess")
-                        .HasColumnType("boolean");
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("PaymentId")
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -755,8 +936,7 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId")
-                        .IsUnique();
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("PaymentTransactions");
                 });
@@ -771,7 +951,8 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Property<string>("Comment")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -800,50 +981,63 @@ namespace Darmon.Infrastructure.Migrations
                     b.ToTable("ProductReviews");
                 });
 
-            modelBuilder.Entity("DeliveryPerson", b =>
-                {
-                    b.HasBaseType("Darmon.Domain.Entities.User");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("VehicleNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("VehicleType")
-                        .HasColumnType("integer");
-
-                    b.HasDiscriminator().HasValue("DeliveryPerson");
-                });
-
             modelBuilder.Entity("Address", b =>
                 {
-                    b.HasOne("Darmon.Domain.Entities.Branch", null)
-                        .WithOne("Address")
-                        .HasForeignKey("Address", "BranchId");
-
-                    b.HasOne("Darmon.Domain.Entities.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId1");
-
                     b.HasOne("Darmon.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Branch");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Darmon.Domain.Entities.Branch", b =>
+                {
+                    b.HasOne("Address", "Address")
+                        .WithOne("Branch")
+                        .HasForeignKey("Darmon.Domain.Entities.Branch", "AddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("Darmon.Domain.Entities.ClickTransaction", b =>
+                {
+                    b.HasOne("PaymentTransaction", "PaymentTransaction")
+                        .WithOne("ClickTransactions")
+                        .HasForeignKey("Darmon.Domain.Entities.ClickTransaction", "PaymentTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaymentTransaction");
+                });
+
+            modelBuilder.Entity("Darmon.Domain.Entities.DeliveryStatusHistory", b =>
+                {
+                    b.HasOne("Darmon.Domain.Entities.User", "ChangedBy")
+                        .WithMany()
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Delivery", "Delivery")
+                        .WithMany("StatusHistories")
+                        .HasForeignKey("DeliveryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChangedBy");
+
+                    b.Navigation("Delivery");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Enums.CartItem", b =>
                 {
                     b.HasOne("Darmon.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Darmon.Domain.Entities.User", "User")
@@ -859,11 +1053,34 @@ namespace Darmon.Infrastructure.Migrations
 
             modelBuilder.Entity("Darmon.Domain.Entities.Order", b =>
                 {
+                    b.HasOne("Darmon.Domain.Entities.Branch", "Branch")
+                        .WithMany("Orders")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Darmon.Domain.Entities.Courier", "Courier")
+                        .WithMany("Orders")
+                        .HasForeignKey("CourierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Delivery", "Delivery")
+                        .WithOne("Order")
+                        .HasForeignKey("Darmon.Domain.Entities.Order", "DeliveryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Darmon.Domain.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Courier");
+
+                    b.Navigation("Delivery");
 
                     b.Navigation("User");
                 });
@@ -877,14 +1094,10 @@ namespace Darmon.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Darmon.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Darmon.Domain.Entities.Product", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Order");
 
@@ -895,7 +1108,8 @@ namespace Darmon.Infrastructure.Migrations
                 {
                     b.HasOne("Darmon.Domain.Entities.Order", "Order")
                         .WithOne("Payment")
-                        .HasForeignKey("Darmon.Domain.Entities.Payment", "OrderId");
+                        .HasForeignKey("Darmon.Domain.Entities.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Order");
                 });
@@ -904,7 +1118,8 @@ namespace Darmon.Infrastructure.Migrations
                 {
                     b.HasOne("Darmon.Domain.Entities.Branch", "Branch")
                         .WithMany("Products")
-                        .HasForeignKey("BranchId");
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Darmon.Domain.Entities.Category", "Category")
                         .WithMany("Products")
@@ -930,9 +1145,15 @@ namespace Darmon.Infrastructure.Migrations
 
             modelBuilder.Entity("Darmon.Domain.Entities.SellerWallet", b =>
                 {
-                    b.HasOne("Darmon.Domain.Entities.User", "User")
+                    b.HasOne("Darmon.Domain.Entities.User", null)
                         .WithOne("SellerWallet")
                         .HasForeignKey("Darmon.Domain.Entities.SellerWallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Darmon.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -943,7 +1164,8 @@ namespace Darmon.Infrastructure.Migrations
                 {
                     b.HasOne("Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Address");
                 });
@@ -964,23 +1186,17 @@ namespace Darmon.Infrastructure.Migrations
                     b.HasOne("Address", "DeliveryAddress")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DeliveryPerson", "DeliveryPerson")
+                    b.HasOne("Darmon.Domain.Entities.Courier", "Courier")
                         .WithMany("Deliveries")
-                        .HasForeignKey("DeliveryPersonId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("CourierId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Darmon.Domain.Entities.Order", "Order")
-                        .WithOne("Delivery")
-                        .HasForeignKey("Delivery", "OrderId");
+                    b.Navigation("Courier");
 
                     b.Navigation("DeliveryAddress");
-
-                    b.Navigation("DeliveryPerson");
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Notification", b =>
@@ -997,8 +1213,8 @@ namespace Darmon.Infrastructure.Migrations
             modelBuilder.Entity("PaymentTransaction", b =>
                 {
                     b.HasOne("Darmon.Domain.Entities.Payment", "Payment")
-                        .WithOne("PaymentTransaction")
-                        .HasForeignKey("PaymentTransaction", "PaymentId")
+                        .WithMany("PaymentTransactions")
+                        .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1014,7 +1230,7 @@ namespace Darmon.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Darmon.Domain.Entities.User", "User")
-                        .WithMany("Reviews")
+                        .WithMany("ProductReviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1024,9 +1240,14 @@ namespace Darmon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Address", b =>
+                {
+                    b.Navigation("Branch");
+                });
+
             modelBuilder.Entity("Darmon.Domain.Entities.Branch", b =>
                 {
-                    b.Navigation("Address");
+                    b.Navigation("Orders");
 
                     b.Navigation("Products");
                 });
@@ -1036,10 +1257,15 @@ namespace Darmon.Infrastructure.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Darmon.Domain.Entities.Courier", b =>
+                {
+                    b.Navigation("Deliveries");
+
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("Darmon.Domain.Entities.Order", b =>
                 {
-                    b.Navigation("Delivery");
-
                     b.Navigation("OrderItems");
 
                     b.Navigation("Payment");
@@ -1047,12 +1273,13 @@ namespace Darmon.Infrastructure.Migrations
 
             modelBuilder.Entity("Darmon.Domain.Entities.Payment", b =>
                 {
-                    b.Navigation("PaymentTransaction")
-                        .IsRequired();
+                    b.Navigation("PaymentTransactions");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Product", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("Images");
 
                     b.Navigation("OrderItems");
@@ -1073,14 +1300,23 @@ namespace Darmon.Infrastructure.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("Reviews");
+                    b.Navigation("ProductReviews");
 
                     b.Navigation("SellerWallet");
                 });
 
-            modelBuilder.Entity("DeliveryPerson", b =>
+            modelBuilder.Entity("Delivery", b =>
                 {
-                    b.Navigation("Deliveries");
+                    b.Navigation("Order")
+                        .IsRequired();
+
+                    b.Navigation("StatusHistories");
+                });
+
+            modelBuilder.Entity("PaymentTransaction", b =>
+                {
+                    b.Navigation("ClickTransactions")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

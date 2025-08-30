@@ -26,8 +26,9 @@ public class AppDbContext : DbContext
     public DbSet<Branch> Branches { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Courier> Couriers { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
-    public DbSet<DeliveryPerson> DeliveryPeople { get; set; }
+    public DbSet<DeliveryStatusHistory> DeliveryStatusHistories { get; set; } = null!;  
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<ClickTransaction> ClickTransactions { get; set; }
     public DbSet<Order> Orders { get; set; }

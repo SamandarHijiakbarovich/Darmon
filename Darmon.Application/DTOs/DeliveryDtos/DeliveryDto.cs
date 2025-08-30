@@ -9,12 +9,12 @@ namespace Darmon.Application.DTOs.DeliveryDtos;
 public class DeliveryDto
 {
     public int Id { get; set; }
+    public int OrderId { get; set; }
+    public int? CourierId { get; set; }
+    public int DeliveryAddressId { get; set; }
+    public decimal DeliveryFee { get; set; }
+    public DeliveryStatus Status { get; set; }
     public DateTime EstimatedDeliveryTime { get; set; }
     public DateTime? ActualDeliveryTime { get; set; }
-    public DeliveryStatus Status { get; set; }
-    public string TrackingNumber { get; set; }
-
-    public int AddressId { get; set; }
-    public int? DeliveryPersonId { get; set; }
-    public int OrderId { get; set; }
+    public string? Notes { get; set; }
 }

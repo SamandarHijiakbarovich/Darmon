@@ -24,10 +24,6 @@ namespace Darmon.Infrastructure.Data.Configurations
                   .HasMaxLength(100)
                   .IsRequired();
 
-            entity.Property(a => a.PostalCode)
-                  .HasMaxLength(20)
-                  .IsRequired();
-
             entity.Property(a => a.Landmark)
                   .HasMaxLength(200);
 

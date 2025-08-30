@@ -11,22 +11,21 @@ public class CourierConfiguration : IEntityTypeConfiguration<Courier>
 {
     public void Configure(EntityTypeBuilder<Courier> entity)
     {
-        // Primary key
         entity.HasKey(c => c.Id);
 
-        // Properties
         entity.Property(c => c.FullName)
               .HasMaxLength(100)
               .IsRequired();
 
-        entity.Property(c => c.PhoneNumber)
-              .HasMaxLength(20)
-              .IsRequired();
 
-        // Relationships
         entity.HasMany(c => c.Orders)
               .WithOne(o => o.Courier)
               .HasForeignKey(o => o.CourierId)
               .OnDelete(DeleteBehavior.Restrict);
+
+        entity.HasMany(c => c.Deliveries)
+              .WithOne(d => d.Courier)
+              .HasForeignKey(d => d.CourierId)
+              .OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e405fecfc2575eb1093d270dc85a800ca28601d6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19f2ff4a495b39b8e0595d19d8beeb504a4a50d4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

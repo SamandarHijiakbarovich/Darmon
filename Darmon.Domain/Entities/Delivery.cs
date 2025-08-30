@@ -16,4 +16,9 @@ public class Delivery:AuditableEntity
 
     public int OrderId { get; set; }
     public Order Order { get; set; } // <-- TO'G'RI
+
+    public string StatusHistory { get; set; }
+
+    public ICollection<DeliveryStatusHistory> StatusHistories { get; set; }
+    public decimal DeliveryFee { get; set; }
 }
