@@ -31,7 +31,7 @@ public class User : AuditableEntity
     public Address? Address { get; set; }
     public ICollection<Order> Orders { get; set; }
     public ICollection<Notification> Notifications { get; set; }
-    public ICollection<ProductReview> Reviews { get; set; }
+    public ICollection<ProductReview> ProductReviews { get; set; }
     public ICollection<CartItem> CartItems { get; set; }
     public SellerWallet? SellerWallet { get; set; } // CustomUserdagi xususiyat
 }

@@ -21,6 +21,7 @@ D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Azure.Core.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Azure.Identity.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\BCrypt.Net-Next.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
+D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Castle.Core.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\ClickSendApi.Client.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\MailKit.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\MediatR.dll
@@ -71,6 +72,7 @@ D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\MimeKit.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Newtonsoft.Json.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Npgsql.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\BouncyCastle.Crypto.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Refit.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Refit.HttpClientFactory.dll
 D:\Darmon\tests\Darmon.IntegrationTests\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll

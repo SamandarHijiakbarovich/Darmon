@@ -9,6 +9,7 @@ D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\Darmon.UnitTests.deps.json
 D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\Darmon.UnitTests.runtimeconfig.json
 D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\Darmon.UnitTests.dll
 D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\Darmon.UnitTests.pdb
+D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\BCrypt.Net-Next.dll
 D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\Castle.Core.dll
 D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\FluentAssertions.dll
 D:\Darmon\tests\Darmon.UnitTests\bin\Debug\net9.0\MediatR.dll

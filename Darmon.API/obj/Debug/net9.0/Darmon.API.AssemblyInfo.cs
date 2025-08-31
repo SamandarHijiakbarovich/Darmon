@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("80bb17d5-b805-445f-9577-fda5a5a184d7")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d93dfd6d5ac3275a5f1485b0680bbc0a272a13f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+081b350045fd5dfffd17ca7389f41bfa5ccd4ec8")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

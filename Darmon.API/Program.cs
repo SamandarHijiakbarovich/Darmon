@@ -16,8 +16,14 @@ using Darmon.Infrastructure.SettingModels;
 using Darmon.Application.DTOs.Configurations;
 using Darmon.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Darmon.Application.Services.Click;
+using Darmon.Infrastructure.Click;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Configuration.AddUserSecrets<Program>();
 
 // =============================================
 // 1. CONFIGURATION SETUP
@@ -34,6 +40,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -81,16 +88,37 @@ builder.Services.AddAutoMapper(typeof(MappingProfil));
 
 // 2.4. REPOSITORY LAYER
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // 2.5. APPLICATION SERVICES
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+//builder.Services.AddScoped<IBranchService, BranchService>();
+//builder.Services.AddScoped<IAddressService, AddressService>();
 
 // 2.6. AUTHENTICATION SERVICES
 builder.Services.AddSingleton<IPasswordHasherService>(
     _ => new BCryptPasswordHasher(workFactor: 11));
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+
+builder.Services.Configure<ClickSettings>(builder.Configuration.GetSection("ClickSettings"));
+builder.Services.AddHttpClient<IClickApiClient, ClickApiClient>();
+builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
+
 
 // 2.7. JWT AUTHENTICATION CONFIGURATION
 builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));

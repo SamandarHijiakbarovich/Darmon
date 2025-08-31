@@ -51,6 +51,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
             "MediatR": {
               "target": "Package",
               "version": "[13.0.0, )"
@@ -159,29 +163,37 @@
               "target": "Package",
               "version": "[9.0.7, )"
             },
-            "Microsoft.Extensions.DependencyInjection": {
-              "target": "Package",
-              "version": "[9.0.7, )"
-            },
             "Microsoft.Extensions.Http": {
               "target": "Package",
               "version": "[9.0.7, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
+            "Microsoft.IdentityModel.JsonWebTokens": {
+              "target": "Package",
+              "version": "[8.14.0, )"
             },
             "MimeKit": {
               "target": "Package",
               "version": "[4.13.0, )"
             },
-            "Newtonsoft.Json": {
+            "Npgsql": {
               "target": "Package",
-              "version": "[13.0.3, )"
+              "version": "[9.0.3, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.4, )"
             },
+            "Portable.BouncyCastle": {
+              "target": "Package",
+              "version": "[1.9.0, )"
+            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[8.13.0, )"
+              "version": "[8.14.0, )"
             },
             "Twilio": {
               "target": "Package",
