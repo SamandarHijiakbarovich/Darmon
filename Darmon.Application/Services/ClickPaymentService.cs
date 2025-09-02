@@ -1,55 +1,122 @@
-﻿using Darmon.Application.DTOs.PaymentDtos;
+﻿using Darmon.Application.DTOs.ClickDtos.ClickrequestDto;
+using Darmon.Application.DTOs.ClickDtos.ClickResponseDto;
+using Darmon.Application.DTOs.PaymentDtos;
 using Darmon.Application.Interfaces;
+using Darmon.Domain.Entities;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Darmon.Application.Services;
 
 public class ClickPaymentService : IClickPaymentService
 {
-    public async Task<ClickResponseDto> PrepareAsync(PrepareRequestDto dto)
+    private readonly IConfiguration _configuration;
+    private readonly string _secretKey;
+
+    public ClickPaymentService(IConfiguration configuration)
     {
-        if (!IsValidSignature(dto))
-            return new ClickResponseDto(-1, "Invalid signature", dto.MerchantTransId, "");
-
-        var order = await GetOrderAsync(dto.MerchantTransId);
-        if (order is null)
-            return new ClickResponseDto(-5, "Order not found", dto.MerchantTransId, "");
-
-        var prepareId = Guid.NewGuid().ToString();
-
-        return new ClickResponseDto(0, "Success", dto.MerchantTransId, prepareId);
+        _configuration = configuration;
+        _secretKey = _configuration["Click:SecretKey"];
     }
 
-    public async Task<ClickResponseDto> CompleteAsync(CompleteRequestDto dto)
+    public async Task<ClickPrepareResponseDto> ProcessPrepareRequestAsync(ClickPrepareRequestDto request)
     {
-        if (!IsValidSignature(dto))
-            return new ClickResponseDto(-1, "Invalid signature", dto.MerchantTransId, dto.MerchantPrepareId);
+        // Signature ni tekshirish
+        if (!ValidateClickSignature(request))
+        {
+            return new ClickPrepareResponseDto
+            {
+                Error = -1,
+                Error_Note = "Invalid signature"
+            };
+        }
 
-        var success = await CompleteOrderAsync(dto.MerchantTransId, dto.Amount);
-        if (!success)
-            return new ClickResponseDto(-6, "Failed to complete order", dto.MerchantTransId, dto.MerchantPrepareId);
-
-        return new ClickResponseDto(0, "Success", dto.MerchantTransId, dto.MerchantPrepareId);
+        // Prepare javobi
+        return new ClickPrepareResponseDto
+        {
+            Click_Trans_Id = request.Click_Trans_Id,
+            Merchant_Trans_Id = request.Merchant_Trans_Id,
+            Merchant_Prepare_Id = request.Merchant_Trans_Id, // Yoki database ID
+            Error = 0,
+            Error_Note = "Success"
+        };
     }
 
-    private bool IsValidSignature(PrepareRequestDto dto)
+    public async Task<ClickCompleteResponseDto> ProcessCompleteRequestAsync(ClickCompleteRequestDto request)
     {
-        // TODO: Implement signature verification using secret key
-        return true;
+        // ✅ Endi to'g'ri metod chaqirilyapti
+        if (!ValidateClickSignature(request))
+        {
+            return new ClickCompleteResponseDto
+            {
+                Error = -1,
+                Error_Note = "Invalid signature"
+            };
+        }
+
+        // Complete javobi
+        return new ClickCompleteResponseDto
+        {
+            Click_Trans_Id = request.Click_Trans_Id,
+            Merchant_Trans_Id = request.Merchant_Trans_Id,
+            Merchant_Confirm_Id = request.Merchant_Prepare_Id,
+            Error = 0,
+            Error_Note = "Success"
+        };
     }
 
-    private Task<Order?> GetOrderAsync(string merchantTransId)
+    private bool ValidateClickSignature(ClickCompleteRequestDto request)
     {
-        // TODO: Fetch order from DB
-        return Task.FromResult<Order?>(new Order { Id = merchantTransId });
+        throw new NotImplementedException();
     }
 
-    private Task<bool> CompleteOrderAsync(string merchantTransId, string amount)
+    public bool ValidateClickSignature(ClickPrepareRequestDto request)
     {
-        // TODO: Update order status in DB
-        return Task.FromResult(true);
+        var generatedSignature = GenerateClickSignature(request);
+        return generatedSignature.Equals(request.Sign_String, StringComparison.OrdinalIgnoreCase);
     }
 
-    // Dummy Order class for illustration
-    private class Order
+    public string GenerateClickSignature(ClickPrepareRequestDto request)
     {
-        public string Id { get; set; } = default!;
+        var signString = $"{request.Click_Trans_Id}" +
+                         $"{request.Service_Id}" +
+                         $"{_secretKey}" +
+                         $"{request.Merchant_Trans_Id}" +
+                         $"{request.Amount}" +
+                         $"{request.Action}" +
+                         $"{request.Sign_Time}";
+
+        return ComputeMD5Hash(signString);
     }
+
+    private string ComputeMD5Hash(string input)
+    {
+        using (var md5 = MD5.Create())
+        {
+            var inputBytes = Encoding.UTF8.GetBytes(input);
+            var hashBytes = md5.ComputeHash(inputBytes);
+
+            var sb = new StringBuilder();
+            foreach (var b in hashBytes)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+            return sb.ToString();
+        }
+    }
+
+    public Task<bool> ValidateClickSignatureAsync(ClickPrepareRequestDto request)
+    {
+        return Task.FromResult(ValidateClickSignature(request));
+    }
+
+    public Task<string> GenerateClickSignatureAsync(ClickPrepareRequestDto request)
+    {
+        return Task.FromResult(GenerateClickSignature(request));
+    }
+
+    
 }

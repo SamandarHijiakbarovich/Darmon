@@ -1,4 +1,7 @@
-﻿using Darmon.Application.DTOs.PaymentDtos;
+﻿using Darmon.Application.DTOs.ClickDtos.ClickrequestDto;
+using Darmon.Application.DTOs.ClickDtos.ClickResponseDto;
+using Darmon.Application.DTOs.PaymentDtos;
+using Darmon.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +12,8 @@ namespace Darmon.Application.Interfaces;
 
 public interface IClickPaymentService
 {
-   
-        Task<ClickResponseDto> PrepareAsync(PrepareRequestDto dto);
-        Task<ClickResponseDto> CompleteAsync(CompleteRequestDto dto);
-    
+    Task<ClickPrepareResponseDto> ProcessPrepareRequestAsync(ClickPrepareRequestDto request);
+    Task<ClickCompleteResponseDto> ProcessCompleteRequestAsync(ClickCompleteRequestDto request);
+    Task<bool> ValidateClickSignatureAsync(ClickPrepareRequestDto request);
+    Task<string> GenerateClickSignatureAsync(ClickPrepareRequestDto request);
 }

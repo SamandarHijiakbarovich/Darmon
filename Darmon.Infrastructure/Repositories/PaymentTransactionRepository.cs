@@ -46,7 +46,7 @@ public class PaymentTransactionRepository : Repository<PaymentTransaction>, IPay
         }
     }
 
-    public async Task<PaymentTransaction?> GetByIdAsync(Guid id, bool includeGateway = true)
+    public async Task<PaymentTransaction?> GetByIdAsync(int id, bool includeGateway = true)
     {
         try
         {
@@ -93,7 +93,7 @@ public class PaymentTransactionRepository : Repository<PaymentTransaction>, IPay
         }
     }
 
-    public async Task<IEnumerable<PaymentTransaction>> GetByPaymentIdAsync(Guid paymentId, bool includeGateway = true)
+    public async Task<IEnumerable<PaymentTransaction>> GetByPaymentIdAsync(int paymentId, bool includeGateway = true)
     {
         try
         {

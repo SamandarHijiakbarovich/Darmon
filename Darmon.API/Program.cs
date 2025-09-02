@@ -23,8 +23,10 @@ using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Configuration.AddUserSecrets<Program>();
-
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddUserSecrets<Program>() // bu muhim
+    .AddEnvironmentVariables();
 // =============================================
 // 1. CONFIGURATION SETUP
 // =============================================
@@ -94,6 +96,8 @@ builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -106,6 +110,8 @@ builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
 
 //builder.Services.AddScoped<IBranchService, BranchService>();
 //builder.Services.AddScoped<IAddressService, AddressService>();

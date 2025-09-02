@@ -12,11 +12,11 @@ namespace Darmon.Application.Interfaces;
 public interface IPaymentTransactionService
 {
     Task<PaymentTransaction> CreateTransactionAsync(PaymentTransactionDto dto);
-    Task<PaymentTransactionDto> GetTransactionByIdAsync(Guid id);
+    Task<PaymentTransactionDto> GetTransactionByIdAsync(int id);
     Task<PaymentTransactionDto> UpdateTransactionAsync(PaymentTransactionDto dto);
-    Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByPaymentIdAsync(Guid paymentId);
+    Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByPaymentIdAsync(int paymentId);
     Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByStatusAsync(TransactionStatus status, int pageNumber = 1, int pageSize = 10);
     Task<PaymentTransactionDto> GetByInternalTraceIdAsync(string internalTraceId);
-    Task<bool> DeleteTransactionAsync(Guid id);
+    Task<bool> DeleteTransactionAsync(int id);
     Task GetAllAsync();
 }

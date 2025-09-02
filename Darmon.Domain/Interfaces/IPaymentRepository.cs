@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Domain.Interfaces;
 
-public interface IPaymentRepository:IRepository<Payment>
+public interface IPaymentRepository : IRepository<Payment>
 {
     /// <summary>
     /// Get payment by ID with optional related entities
@@ -15,7 +15,9 @@ public interface IPaymentRepository:IRepository<Payment>
     /// <param name="id">Payment ID</param>
     /// <param name="includeRelated">Include transactions and order</param>
     /// <returns>Payment entity or null</returns>
-    Task<Payment?> GetByIdAsync(Guid id, bool includeRelated = false);
+    Task<Payment?> GetByIdAsync(int id, bool includeRelated = false);
+
+   
 
     /// <summary>
     /// Get all payments with pagination
@@ -53,5 +55,57 @@ public interface IPaymentRepository:IRepository<Payment>
     /// <returns>List of payments for the order</returns>
     Task<IEnumerable<Payment>> GetByOrderIdAsync(int orderId);
 
+    /// <summary>
+    /// Get payment by Merchant Transaction ID (Click uchun)
+    /// </summary>
+    /// <param name="merchantTransId">Merchant Transaction ID</param>
+    /// <returns>Payment entity or null</returns>
+    Task<Payment?> GetByMerchantTransIdAsync(int merchantTransId);
 
+    /// <summary>
+    /// Get payment by Click Transaction ID
+    /// </summary>
+    /// <param name="clickTransId">Click Transaction ID</param>
+    /// <returns>Payment entity or null</returns>
+    Task<Payment?> GetByClickTransIdAsync(int clickTransId);
+
+    /// <summary>
+    /// Get payments by status
+    /// </summary>
+    /// <param name="status">Payment status</param>
+    /// <param name="pageNumber">Page number</param>
+    /// <param name="pageSize">Page size</param>
+    /// <returns>List of payments with specified status</returns>
+    Task<IEnumerable<Payment>> GetByStatusAsync(PaymentStatus status, int pageNumber = 1, int pageSize = 10);
+
+    /// <summary>
+    /// Get payments within date range
+    /// </summary>
+    /// <param name="startDate">Start date</param>
+    /// <param name="endDate">End date</param>
+    /// <param name="includeRelated">Include related entities</param>
+    /// <returns>List of payments in date range</returns>
+    Task<IEnumerable<Payment>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, bool includeRelated = false);
+
+    /// <summary>
+    /// Check if payment exists by Merchant Transaction ID
+    /// </summary>
+    /// <param name="merchantTransId">Merchant Transaction ID</param>
+    /// <returns>True if exists</returns>
+    Task<bool> ExistsByMerchantTransIdAsync(int merchantTransId);
+
+    /// <summary>
+    /// Get total count of payments by status
+    /// </summary>
+    /// <param name="status">Payment status</param>
+    /// <returns>Count of payments</returns>
+    Task<int> GetCountByStatusAsync(PaymentStatus status);
+
+    /// <summary>
+    /// Get total revenue amount
+    /// </summary>
+    /// <param name="startDate">Start date (optional)</param>
+    /// <param name="endDate">End date (optional)</param>
+    /// <returns>Total revenue amount</returns>
+    Task<decimal> GetTotalRevenueAsync(DateTime? startDate = null, DateTime? endDate = null);
 }

@@ -34,7 +34,7 @@ public class PaymentTransactionService : IPaymentTransactionService
         return entity;
     }
 
-    public async Task<PaymentTransactionDto> GetTransactionByIdAsync(Guid id)
+    public async Task<PaymentTransactionDto> GetTransactionByIdAsync(int id)
     {
         var entity = await _repository.GetByIdAsync(id);
         return entity == null ? null : _mapper.Map<PaymentTransactionDto>(entity);
@@ -54,7 +54,7 @@ public class PaymentTransactionService : IPaymentTransactionService
         return _mapper.Map<PaymentTransactionDto>(entity);
     }
 
-    public async Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByPaymentIdAsync(Guid paymentId)
+    public async Task<IEnumerable<PaymentTransactionDto>> GetTransactionsByPaymentIdAsync(int paymentId)
     {
         var entities = await _repository.GetByPaymentIdAsync(paymentId);
         return _mapper.Map<IEnumerable<PaymentTransactionDto>>(entities);
@@ -72,7 +72,7 @@ public class PaymentTransactionService : IPaymentTransactionService
         return entity == null ? null : _mapper.Map<PaymentTransactionDto>(entity);
     }
 
-    public async Task<bool> DeleteTransactionAsync(Guid id)
+    public async Task<bool> DeleteTransactionAsync(int id)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity == null)

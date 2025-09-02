@@ -1,4 +1,5 @@
 ﻿using Darmon.Domain.Entities;
+using Darmon.Domain.Entities.Enums;
 using Darmon.Domain.Exceptions;
 using Darmon.Domain.Interfaces;
 using Darmon.Infrastructure.Data;
@@ -22,7 +23,7 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Payment?> GetByIdAsync(Guid id, bool includeRelated = false)
+    public async Task<Payment?> GetByIdAsync(int id, bool includeRelated = false)
     {
         try
         {
@@ -31,8 +32,7 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
             if (includeRelated)
             {
                 query = query.Include(p => p.PaymentTransactions)
-                             .ThenInclude(t => t.ClickTransactions)
-                           .Include(p => p.Order);
+                             .Include(p => p.Order);
             }
 
             return await query.FirstOrDefaultAsync(p => p.Id == id);
@@ -44,6 +44,8 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
         }
     }
 
+   
+
     public async Task<IEnumerable<Payment>> GetAllAsync(int pageNumber = 1, int pageSize = 10, bool includeRelated = false)
     {
         try
@@ -53,11 +55,11 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
             if (includeRelated)
             {
                 query = query.Include(p => p.PaymentTransactions)
-                           .Include(p => p.Order);
+                             .Include(p => p.Order);
             }
 
             return await query
-                .OrderBy(p => p.CreatedAt)
+                .OrderByDescending(p => p.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
@@ -100,7 +102,7 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
 
         try
         {
-            _context.Entry(payment).State = EntityState.Modified;
+            _context.Payments.Update(payment);
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException ex)
@@ -161,5 +163,206 @@ public class PaymentRepository : Repository<Payment>, IPaymentRepository
         }
     }
 
-   
+    public async Task<Payment?> GetByMerchantTransIdAsync(int merchantTransId)
+    {
+        try
+        {
+            return await _context.Payments
+                .FirstOrDefaultAsync(p => p.MerchantTransId == merchantTransId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payment by MerchantTransId {MerchantTransId}", merchantTransId);
+            throw;
+        }
+    }
+
+    public async Task<Payment?> GetByClickTransIdAsync(int clickTransId)
+    {
+        try
+        {
+            return await _context.Payments
+                .FirstOrDefaultAsync(p => p.ClickTransId == clickTransId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payment by ClickTransId {ClickTransId}", clickTransId);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Payment>> GetByStatusAsync(PaymentStatus status, int pageNumber = 1, int pageSize = 10)
+    {
+        try
+        {
+            return await _context.Payments
+                .Where(p => p.Status == status)
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payments with status {Status}", status);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Payment>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, bool includeRelated = false)
+    {
+        try
+        {
+            var query = _context.Payments
+                .Where(p => p.CreatedAt >= startDate && p.CreatedAt <= endDate);
+
+            if (includeRelated)
+            {
+                query = query.Include(p => p.PaymentTransactions)
+                             .Include(p => p.Order);
+            }
+
+            return await query
+                .OrderByDescending(p => p.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payments from {StartDate} to {EndDate}", startDate, endDate);
+            throw;
+        }
+    }
+
+    public async Task<bool> ExistsByMerchantTransIdAsync(int merchantTransId)
+    {
+        try
+        {
+            return await _context.Payments
+                .AnyAsync(p => p.MerchantTransId == merchantTransId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking existence by MerchantTransId {MerchantTransId}", merchantTransId);
+            throw;
+        }
+    }
+
+    public async Task<int> GetCountByStatusAsync(PaymentStatus status)
+    {
+        try
+        {
+            return await _context.Payments
+                .CountAsync(p => p.Status == status);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting count by status {Status}", status);
+            throw;
+        }
+    }
+
+    public async Task<decimal> GetTotalRevenueAsync(DateTime? startDate = null, DateTime? endDate = null)
+    {
+        try
+        {
+            var query = _context.Payments
+                .Where(p => p.Status == PaymentStatus.Completed);
+
+            if (startDate.HasValue)
+                query = query.Where(p => p.CreatedAt >= startDate.Value);
+
+            if (endDate.HasValue)
+                query = query.Where(p => p.CreatedAt <= endDate.Value);
+
+            return await query.SumAsync(p => p.Amount);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error calculating total revenue");
+            throw;
+        }
+    }
+
+    // Qo'shimcha metodlar - Payme va boshqa providerlar uchun
+    public async Task<Payment?> GetByPaymeTransactionIdAsync(string paymeTransactionId)
+    {
+        try
+        {
+            return await _context.Payments
+                .FirstOrDefaultAsync(p => p.PaymeTransactionId == paymeTransactionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payment by PaymeTransactionId {PaymeTransactionId}", paymeTransactionId);
+            throw;
+        }
+    }
+
+    public async Task<Payment?> GetByGatewayTransactionIdAsync(string gatewayTransactionId)
+    {
+        try
+        {
+            return await _context.Payments
+                .FirstOrDefaultAsync(p => p.GatewayTransactionId == gatewayTransactionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payment by GatewayTransactionId {GatewayTransactionId}", gatewayTransactionId);
+            throw;
+        }
+    }
+
+    public async Task<bool> ExistsByPaymeTransactionIdAsync(string paymeTransactionId)
+    {
+        try
+        {
+            return await _context.Payments
+                .AnyAsync(p => p.PaymeTransactionId == paymeTransactionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking existence by PaymeTransactionId {PaymeTransactionId}", paymeTransactionId);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Payment>> GetByProviderAsync(PaymentProvider provider, int pageNumber = 1, int pageSize = 10)
+    {
+        try
+        {
+            return await _context.Payments
+                .Where(p => p.Provider == provider)
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payments for provider {Provider}", provider);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Payment>> GetByStatusAndProviderAsync(PaymentStatus status, PaymentProvider provider, int pageNumber = 1, int pageSize = 10)
+    {
+        try
+        {
+            return await _context.Payments
+                .Where(p => p.Status == status && p.Provider == provider)
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving payments for status {Status} and provider {Provider}", status, provider);
+            throw;
+        }
+    }
 }
