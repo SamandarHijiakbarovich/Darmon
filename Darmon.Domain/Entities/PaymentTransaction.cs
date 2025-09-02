@@ -20,7 +20,7 @@ public class PaymentTransaction : BaseEntity
     public string? GatewaySessionId { get; set; }
 
     // Relations
-    public Guid PaymentId { get; set; }
+    public int PaymentId { get; set; }
 
     public Payment Payment { get; set; } = default!;
 

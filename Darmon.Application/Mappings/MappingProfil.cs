@@ -21,6 +21,8 @@ public class MappingProfil : Profile
 {
     public MappingProfil()
     {
+
+
         // 🧑‍💼 User mapping
         CreateMap<UserRequestDto, User>(); // DTO → Entity
         CreateMap<User, UserResponseDto>() // Entity → DTO
@@ -70,6 +72,9 @@ public class MappingProfil : Profile
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
 
-       
+
+     
+
+
     }
 }
