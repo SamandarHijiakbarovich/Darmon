@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Darmon.Application.DTOs.PaymentDtos.CommonDtos
+{
+    public class CardTokenPaymentResponseDto
+    {
+        public int ErrorCode { get; set; }
+        public string ErrorNote { get; set; } = default!;
+        public long PaymentId { get; set; }
+        public int PaymentStatus { get; set; }
+    }
+}

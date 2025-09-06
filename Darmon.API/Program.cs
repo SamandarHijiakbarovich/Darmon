@@ -112,9 +112,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
-
-//builder.Services.AddScoped<IBranchService, BranchService>();
-//builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
 
 // 2.6. AUTHENTICATION SERVICES
 builder.Services.AddSingleton<IPasswordHasherService>(
@@ -135,7 +134,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
+    options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {

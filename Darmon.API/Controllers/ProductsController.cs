@@ -1,9 +1,7 @@
 ﻿using Darmon.Application.DTOs.ProductDTos;
 using Darmon.Application.Interfaces;
-using Darmon.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Darmon.API.Controllers;
 
@@ -21,8 +19,10 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
+    // ✅ USER endpoints (hamma foydalanishi mumkin)
     // GET: api/products
     [HttpGet]
+    [AllowAnonymous] // login bo‘lmagan ham ko‘ra oladi
     [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAll()
@@ -41,6 +41,7 @@ public class ProductsController : ControllerBase
 
     // GET: api/products/{id}
     [HttpGet("{id}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -50,10 +51,7 @@ public class ProductsController : ControllerBase
         {
             var product = await _productService.GetByIdAsync(id);
             if (product is null)
-            {
-                _logger.LogWarning("Product with ID {ProductId} not found", id);
                 return NotFound();
-            }
 
             return Ok(product);
         }
@@ -66,8 +64,7 @@ public class ProductsController : ControllerBase
 
     // GET: api/products/search?keyword=aspirin
     [HttpGet("search")]
-    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
     public async Task<IActionResult> Search([FromQuery] string keyword)
     {
         try
@@ -84,8 +81,7 @@ public class ProductsController : ControllerBase
 
     // GET: api/products/category/{categoryId}
     [HttpGet("category/{categoryId}")]
-    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
     public async Task<IActionResult> GetByCategory(int categoryId)
     {
         try
@@ -100,28 +96,9 @@ public class ProductsController : ControllerBase
         }
     }
 
-    // GET: api/products/low-stock?threshold=5
-    [HttpGet("low-stock")]
-    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetLowStock([FromQuery] int threshold)
-    {
-        try
-        {
-            var products = await _productService.GetLowStockAsync(threshold);
-            return Ok(products);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving low stock products with threshold {Threshold}", threshold);
-            return StatusCode(500, new { Error = "Server error" });
-        }
-    }
-
     // GET: api/products/out-of-stock
     [HttpGet("out-of-stock")]
-    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
     public async Task<IActionResult> GetOutOfStock()
     {
         try
@@ -136,11 +113,27 @@ public class ProductsController : ControllerBase
         }
     }
 
+    // GET: api/products/low-stock?threshold=5
+    [HttpGet("low-stock")]
+    [Authorize(Roles = "Seller")] // faqat Seller ko‘radi
+    public async Task<IActionResult> GetLowStock([FromQuery] int threshold)
+    {
+        try
+        {
+            var products = await _productService.GetLowStockAsync(threshold);
+            return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving low stock products with threshold {Threshold}", threshold);
+            return StatusCode(500, new { Error = "Server error" });
+        }
+    }
+
+    // ✅ SELLER endpoints (faqat Seller foydalanadi)
     // POST: api/products
     [HttpPost]
-    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Seller")]
     public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
     {
         try
@@ -157,19 +150,14 @@ public class ProductsController : ControllerBase
 
     // PUT: api/products/{id}
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Seller")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateProductDto dto)
     {
         try
         {
             var updatedProduct = await _productService.UpdateAsync(id, dto);
             if (updatedProduct is null)
-            {
-                _logger.LogWarning("Product with ID {ProductId} not found for update", id);
                 return NotFound();
-            }
 
             return Ok(updatedProduct);
         }
@@ -182,19 +170,14 @@ public class ProductsController : ControllerBase
 
     // DELETE: api/products/{id}
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "Seller")]
     public async Task<IActionResult> Delete(int id)
     {
         try
         {
             var success = await _productService.DeleteAsync(id);
             if (!success)
-            {
-                _logger.LogWarning("Product with ID {ProductId} not found for deletion", id);
                 return NotFound();
-            }
 
             return NoContent();
         }

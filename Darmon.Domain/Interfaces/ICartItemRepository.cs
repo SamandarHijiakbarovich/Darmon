@@ -1,4 +1,5 @@
 ﻿using Darmon.Domain.Entities.Enums;
+using Darmon.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Darmon.Infrastructure.Repositories;
 
-public interface ICartItemRepository
+public interface ICartItemRepository: IRepository<CartItem>
 {
     Task<CartItem> AddAsync(CartItem cartItem);
     Task<CartItem?> GetByIdAsync(int id);
