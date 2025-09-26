@@ -1,15 +1,10 @@
 ﻿using Darmon.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Darmon.Infrastructure.Data.Configurations;
 
-public class OrderConfiguration:IEntityTypeConfiguration<Order>
+public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> entity)
     {
@@ -26,7 +21,7 @@ public class OrderConfiguration:IEntityTypeConfiguration<Order>
               .IsRequired();
 
         entity.Property(o => o.Status)
-              .HasConversion<int>() // Enum to int
+              .HasConversion<int>()
               .IsRequired();
 
         // Relationships
@@ -43,20 +38,16 @@ public class OrderConfiguration:IEntityTypeConfiguration<Order>
         entity.HasOne(o => o.Delivery)
               .WithOne(d => d.Order)
               .HasForeignKey<Order>(o => o.DeliveryId)
+              .IsRequired(false)
               .OnDelete(DeleteBehavior.SetNull);
 
-        entity.HasOne(o => o.Payment)
-              .WithOne(p => p.Order)
-              .HasForeignKey<Order>(o => o.PaymentId)
-              .OnDelete(DeleteBehavior.SetNull);
+        // This is the key change! We remove the explicit one-to-one configuration here.
+        // The relationship is now fully defined in PaymentTransactionConfiguration.
+        // We only need to define it in one place to avoid conflicts.
 
         entity.HasMany(o => o.OrderItems)
               .WithOne(oi => oi.Order)
               .HasForeignKey(oi => oi.OrderId)
               .OnDelete(DeleteBehavior.Cascade);
-
-        // Soft delete filter
-        entity.HasQueryFilter(o => !o.IsDeleted);
-
     }
 }

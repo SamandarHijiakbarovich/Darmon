@@ -2,58 +2,54 @@
 using Darmon.Domain.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Darmon.Infrastructure.Data.Configurations;
 
-public class PaymentTransactionConfiguration:IEntityTypeConfiguration<PaymentTransaction>
+public class PaymentTransactionConfiguration : IEntityTypeConfiguration<PaymentTransaction>
 {
     public void Configure(EntityTypeBuilder<PaymentTransaction> entity)
     {
-        // Primary key
+        // Primary key - Asosiy kalit
         entity.HasKey(pt => pt.Id);
 
-        // Properties
+        // Xususiyatlar (Properties)
         entity.Property(pt => pt.Amount)
               .HasColumnType("decimal(18,2)")
               .IsRequired();
 
-        entity.Property(pt => pt.InternalTraceId)
+        entity.Property(pt => pt.TransactionId)
+              .IsRequired()
+              .HasMaxLength(100);
+
+        entity.Property(pt => pt.PaymentTransId)
+              .HasMaxLength(200);
+
+        entity.Property(pt => pt.CreatedAt)
               .IsRequired();
 
         entity.Property(pt => pt.Status)
-              .HasConversion<int>() // Enum to int
+              .HasConversion<int>()
               .IsRequired();
 
-        entity.Property(pt => pt.ClientRedirectUrl)
-              .HasMaxLength(500);
+        entity.Property(pt => pt.PaymentType)
+              .HasConversion<int>()
+              .IsRequired();
 
-        entity.Property(pt => pt.CallbackUrl)
-              .HasMaxLength(500);
+        // Aloqalar (Relationships)
 
-        entity.Property(pt => pt.ErrorMessage)
-              .HasMaxLength(1000);
+        // Foydalanuvchi bilan aloqa
+        entity.HasOne(pt => pt.User)
+              .WithMany()
+              .HasForeignKey(pt => pt.UserId)
+              .OnDelete(DeleteBehavior.NoAction);
 
-        entity.Property(pt => pt.GatewaySessionId)
-              .HasMaxLength(200);
-
-        // Relationships
-        entity.HasOne(pt => pt.Payment)
-              .WithMany(p => p.PaymentTransactions)
-              .HasForeignKey(pt => pt.PaymentId)
-              .OnDelete(DeleteBehavior.Cascade);
-
-        entity.HasOne(pt => pt.ClickTransactions)
-              .WithOne(ct => ct.PaymentTransaction)
-              .HasForeignKey<ClickTransaction>(ct => ct.PaymentTransactionId)
-              .OnDelete(DeleteBehavior.Cascade);
-
-        // Soft delete filter (if applicable)
-        entity.HasQueryFilter(pt => !pt.IsDeleted);
+        // This is the key change! This single line defines the one-to-one relationship.
+        // It says: "A PaymentTransaction has one Order, and that Order has one PaymentTransaction."
+        entity.HasOne(pt => pt.Order)
+              .WithOne(o => o.PaymentTransaction)
+              .HasForeignKey<PaymentTransaction>(pt => pt.OrderId)
+              .IsRequired(false) // An order is not mandatory at the time of transaction creation
+              .OnDelete(DeleteBehavior.SetNull); // If the order is deleted, set the OrderId to null.
     }
 }

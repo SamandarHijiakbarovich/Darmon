@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+25f417cca80e0d838958253e832d23fbb1ebf19d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+087e27ef9f3cb8e87e7d4d483d4918921b12ec0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

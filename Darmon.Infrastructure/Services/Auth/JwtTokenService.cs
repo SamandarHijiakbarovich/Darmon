@@ -41,7 +41,13 @@ public class JwtTokenService:ITokenService
             signingCredentials: creds
         );
 
+        Console.WriteLine("=== GENERATE TOKEN ===");
+        Console.WriteLine("Secret: " + _jwtSettings.Secret);
+        Console.WriteLine("Issuer: " + _jwtSettings.Issuer);
+        Console.WriteLine("Audience: " + _jwtSettings.Audience);
+
         return new JwtSecurityTokenHandler().WriteToken(token);
+
     }
 
     public string GenerateRefreshToken()

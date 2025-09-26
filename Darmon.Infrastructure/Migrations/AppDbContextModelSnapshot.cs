@@ -191,78 +191,6 @@ namespace Darmon.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Darmon.Domain.Entities.ClickTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ErrorCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("ErrorMessage")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("PaymentTransactionId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Provider")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime?>("ProviderTimestamp")
-                        .HasColumnType("timestamp");
-
-                    b.Property<string>("ProviderTransactionId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("RawRequest")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RawResponse")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("TraceId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PaymentTransactionId")
-                        .IsUnique();
-
-                    b.ToTable("ClickTransactions");
-                });
-
             modelBuilder.Entity("Darmon.Domain.Entities.Courier", b =>
                 {
                     b.Property<int>("Id")
@@ -414,8 +342,8 @@ namespace Darmon.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("PaymentTransactionId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -482,99 +410,6 @@ namespace Darmon.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("Darmon.Domain.Entities.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ClickTransId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasDefaultValue("UZS");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<int?>("ErrorCode")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ErrorMessage")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GatewayState")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("GatewayTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GatewayTransactionId")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("MerchantPrepareId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("MerchantTransId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("PaymeState")
-                        .HasColumnType("integer");
-
-                    b.Property<long?>("PaymeTime")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PaymeTransactionId")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Provider")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Product", b =>
@@ -931,47 +766,48 @@ namespace Darmon.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
+                    b.Property<float>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("CallbackUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("ClientRedirectUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ErrorMessage")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
-
-                    b.Property<string>("GatewaySessionId")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("InternalTraceId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("PaymentId")
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PaymentTransId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("PaymentType")
                         .HasColumnType("integer");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("PaymentTransactions");
                 });
@@ -1035,17 +871,6 @@ namespace Darmon.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("Darmon.Domain.Entities.ClickTransaction", b =>
-                {
-                    b.HasOne("PaymentTransaction", "PaymentTransaction")
-                        .WithOne("ClickTransactions")
-                        .HasForeignKey("Darmon.Domain.Entities.ClickTransaction", "PaymentTransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PaymentTransaction");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.DeliveryStatusHistory", b =>
@@ -1137,16 +962,6 @@ namespace Darmon.Infrastructure.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Darmon.Domain.Entities.Payment", b =>
-                {
-                    b.HasOne("Darmon.Domain.Entities.Order", "Order")
-                        .WithOne("Payment")
-                        .HasForeignKey("Darmon.Domain.Entities.Payment", "OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Product", b =>
@@ -1247,13 +1062,20 @@ namespace Darmon.Infrastructure.Migrations
 
             modelBuilder.Entity("PaymentTransaction", b =>
                 {
-                    b.HasOne("Darmon.Domain.Entities.Payment", "Payment")
-                        .WithMany("PaymentTransactions")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Darmon.Domain.Entities.Order", "Order")
+                        .WithOne("PaymentTransaction")
+                        .HasForeignKey("PaymentTransaction", "OrderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Darmon.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Payment");
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ProductReview", b =>
@@ -1303,12 +1125,7 @@ namespace Darmon.Infrastructure.Migrations
                 {
                     b.Navigation("OrderItems");
 
-                    b.Navigation("Payment");
-                });
-
-            modelBuilder.Entity("Darmon.Domain.Entities.Payment", b =>
-                {
-                    b.Navigation("PaymentTransactions");
+                    b.Navigation("PaymentTransaction");
                 });
 
             modelBuilder.Entity("Darmon.Domain.Entities.Product", b =>
@@ -1346,12 +1163,6 @@ namespace Darmon.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("StatusHistories");
-                });
-
-            modelBuilder.Entity("PaymentTransaction", b =>
-                {
-                    b.Navigation("ClickTransactions")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

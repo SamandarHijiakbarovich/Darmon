@@ -14,145 +14,77 @@ namespace Darmon.Infrastructure.Repositories;
 
 public class PaymentTransactionRepository : Repository<PaymentTransaction>, IPaymentTransactionRepository
 {
-    private readonly AppDbContext _context;
-    private readonly ILogger<PaymentTransactionRepository> _logger;
+    private readonly AppDbContext _dbcontext;
 
-    public PaymentTransactionRepository(AppDbContext context, ILogger<PaymentTransactionRepository> logger) : base(context)
+    public PaymentTransactionRepository(AppDbContext applicationDbContext) : base(applicationDbContext)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _dbcontext = applicationDbContext;
     }
 
-    public async Task<PaymentTransaction> AddAsync(PaymentTransaction transaction)
-    {
-        if (transaction == null)
-            throw new ArgumentNullException(nameof(transaction));
-
-        try
-        {
-            await _context.PaymentTransactions.AddAsync(transaction);
-            await _context.SaveChangesAsync();
-            return transaction;
-        }
-        catch (DbUpdateException ex)
-        {
-            _logger.LogError(ex, "Database error while adding payment transaction");
-            throw new RepositoryException("Could not add payment transaction", ex);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error adding payment transaction");
-            throw;
-        }
-    }
-
-    public async Task<PaymentTransaction?> GetByIdAsync(int id, bool includeGateway = true)
+    public async Task<string> GenerateTransactionIdAsync()
     {
         try
         {
-            var query = _context.PaymentTransactions.AsQueryable();
+            // Bazadan eng so'nggi TransactionId ni olish
+            var lastTransaction = await _dbcontext.PaymentTransactions
+                .OrderByDescending(t => t.CreatedAt) // Yangi transactionni olish uchun so'ngi tarixni tartibga solish
+                .FirstOrDefaultAsync();
+            // Agar bazada avvalgi transaction bo'lmasa, boshlang'ich qiymatni belgilash
+            string lastTransactionId = lastTransaction?.TransactionId ?? "INV-A000000";
 
-            if (includeGateway)
+            // Transaction ID ni ajratish
+            string[] parts = lastTransactionId.Split('-');
+            string prefix = parts[0];  // INV
+            char letterPart = parts[1][0];  // A
+            int numberPart = int.Parse(parts[1].Substring(1));  // 000001
+
+            // Agar raqam 999999 bo'lsa, harfni oshir
+            if (numberPart == 999999)
             {
-                query = query.Include(t => t.ClickTransactions);
+                // Harfni oshirish
+                letterPart = (char)(letterPart + 1);
+                numberPart = 1;  // Raqamni qayta boshlash
+            }
+            else
+            {
+                numberPart++;  // Raqamni oshirish
             }
 
-            return await query.FirstOrDefaultAsync(t => t.PaymentId == id);
+            // Yangi transaction ID ni yaratish
+            string transactionId = $"{prefix}-{letterPart}{numberPart:000000}";  // Raqamni 6 xonali qilib ko'rsatish
+
+            return await Task.FromResult(transactionId);
         }
-        catch (Exception ex)
+        catch
         {
-            _logger.LogError(ex, "Error retrieving payment transaction with ID {TransactionId}", id);
-            throw;
+            throw new Exception("TransactionId ni yaratishda xatolik");
         }
     }
 
-    public async Task UpdateAsync(PaymentTransaction transaction)
-    {
-        if (transaction == null)
-            throw new ArgumentNullException(nameof(transaction));
-
-        try
-        {
-            _context.Entry(transaction).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException ex)
-        {
-            _logger.LogError(ex, "Concurrency error updating payment transaction with ID {TransactionId}", transaction.Id);
-            throw new RepositoryException("Payment transaction update concurrency error", ex);
-        }
-        catch (DbUpdateException ex)
-        {
-            _logger.LogError(ex, "Database error updating payment transaction with ID {TransactionId}", transaction.Id);
-            throw new RepositoryException("Could not update payment transaction", ex);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error updating payment transaction with ID {TransactionId}", transaction.Id);
-            throw;
-        }
-    }
-
-    public async Task<IEnumerable<PaymentTransaction>> GetByPaymentIdAsync(int paymentId, bool includeGateway = true)
+    // Transactionni ID bo'yicha olish
+    public async Task<PaymentTransaction> GetTransactionByTransactionIdAsync(string transactionId)
     {
         try
         {
-            var query = _context.PaymentTransactions
-                .Where(t => t.PaymentId == paymentId)
-                .AsQueryable();
-
-            if (includeGateway)
-            {
-                query = query.Include(t => t.ClickTransactions);
-            }
-
-            return await query
-                .OrderByDescending(t => t.CreatedAt)
-                .AsNoTracking()
-                .ToListAsync();
+            return await _dbcontext.PaymentTransactions.FirstOrDefaultAsync(t => t.TransactionId == transactionId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving payment transactions for payment ID {PaymentId}", paymentId);
-            throw;
+            return null;
         }
     }
 
-    public async Task<IEnumerable<PaymentTransaction>> GetByStatusAsync(TransactionStatus status, int pageNumber = 1, int pageSize = 10)
+    public async Task SaveChangesAsync(PaymentTransaction transaction)
     {
-        try
-        {
-            return await _context.PaymentTransactions
-                .Where(t => t.Status == status)
-                .OrderByDescending(t => t.CreatedAt)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving payment transactions with status {Status}", status);
-            throw;
-        }
+        _dbcontext.PaymentTransactions.Add(transaction);
+        await _dbcontext.SaveChangesAsync();
     }
 
-   
-
-    public async Task<PaymentTransaction> GetByInternalTraceIdAsync(string internalTraceId)
+    public async Task UpdateChangesAsync(PaymentTransaction transaction)
     {
-        try
-        {
-            return await _context.PaymentTransactions
-                .AsNoTracking()
-                .FirstOrDefaultAsync(t => t.InternalTraceId == internalTraceId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"InternalTraceId: {internalTraceId} bo'yicha tranzaksiyani olishda xato");
-            throw; // Yoki null qaytarishingiz mumkin
-        }
+        _dbcontext.PaymentTransactions.Update(transaction);
+        await _dbcontext.SaveChangesAsync();
     }
 
-   
+
 }

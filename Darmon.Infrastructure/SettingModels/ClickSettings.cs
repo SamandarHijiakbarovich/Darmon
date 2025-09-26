@@ -8,18 +8,10 @@ namespace Darmon.Infrastructure.SettingModels;
 
 public class ClickSettings
 {
-    /// <summary>Merchant ID (beriladi ro'yxatdan o'tishda)</summary>
-    public int MerchantId { get; set; }
-
-    /// <summary>Service ID (har bir xizmat uchun alohida)</summary>
-    public int ServiceId { get; set; }
-
-    /// <summary>Merchant User ID (Auth headerda ishlatiladi)</summary>
-    public string MerchantUserId { get; set; } = string.Empty;
-
-    /// <summary>Secret Key (maxfiy, sha1 digest uchun ishlatiladi)</summary>
-    public string SecretKey { get; set; } = string.Empty;
-
-    /// <summary>Click API bazaviy URL (https://api.click.uz/v2/merchant)</summary>
-    public string BaseUrl { get; set; } = "https://api.click.uz/v2/merchant";
+    public int Service_ID { get; set; } // Xizmat ID (CLICK tizimida xizmat identifikatori)
+    public int Merchant_ID { get; set; } // Savdogar (merchant) ID
+    public string Secret_Key { get; set; } // Maxfiy kalit (to'lovni tasdiqlash uchun ishlatiladi)
+    public string Merchant_User_ID { get; set; } // Savdogar (merchant) foydalanuvchi ID
+    public string Url { get; set; } // CLICK API uchun URL
+    public string ReturnUrl { get; set; } // To'lovdan so'ng qaytish URL manzili
 }
