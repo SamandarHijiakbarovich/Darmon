@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Darmon.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c18b2920de98f1c68a683a4f9b720327f4289386")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a8dc030f55d5da6cea52ef0d3998d79f93dbb09")]
 [assembly: System.Reflection.AssemblyProductAttribute("Darmon.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Darmon.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
