@@ -30,10 +30,8 @@ public class AppDbContext : DbContext
     public DbSet<Delivery> Deliveries { get; set; }
     public DbSet<DeliveryStatusHistory> DeliveryStatusHistories { get; set; } = null!;  
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<ClickTransaction> ClickTransactions { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }

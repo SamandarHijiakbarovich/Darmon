@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Darmon.Infrastructure.Repositories;
 
-public class CartItemRepository
+public class CartItemRepository: Repository<CartItem>, ICartItemRepository
 {
     private readonly AppDbContext _context;
     private readonly ILogger<CartItemRepository> _logger;
 
-    public CartItemRepository(AppDbContext context, ILogger<CartItemRepository> logger)
+    public CartItemRepository(AppDbContext context, ILogger<CartItemRepository> logger): base(context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
