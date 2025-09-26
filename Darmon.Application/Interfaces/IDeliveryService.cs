@@ -21,5 +21,7 @@ namespace Darmon.Application.Interfaces
 
         // NARX HISOBLASH
         Task<decimal> CalculateDeliveryFeeAsync(int addressId, int branchId);
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,14 +9,14 @@ namespace Darmon.Application.DTOs.ClickDtos.ClickrequestDto;
 
 public class ClickPrepareRequestDto
 {
-    public int Click_Trans_Id { get; set; }
-    public int Service_Id { get; set; }
-    public int Merchant_Trans_Id { get; set; }
-    public decimal Amount { get; set; }
-    public int Action { get; set; }
-    public int Error { get; set; }
-    public string? Error_Note { get; set; }
-    public string? Sign_Time { get; set; }
-    public string? Sign_String { get; set; }
-    public int? Merchant_Prepare_Id { get; set; }
+    public long click_trans_id { get; set; } // CLICK tizimida tranzaksiya ID (bigint)
+    public int service_id { get; set; } // Xizmat ID
+    public long click_paydoc_id { get; set; } // CLICK tizimida to'lov hujjati ID (bigint)
+    public string merchant_trans_id { get; set; } // Yetkazib beruvchining tranzaksiya ID / hisob raqami
+    public float amount { get; set; } // To'lov summasi
+    public int action { get; set; } // Amal turi (masalan, to'lovni tasdiqlash yoki qaytarish)
+    public int error { get; set; } // Xato kodi
+    public string sign_time { get; set; } // Imzo yaratilgan vaqt (string)
+    public string error_note { get; set; } // Xato haqida izoh
+    public string sign_string { get; set; } // Imzo qatori
 }

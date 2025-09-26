@@ -3,6 +3,11 @@ using Darmon.Application.DTOs.ClickDtos.ClickResponseDto;
 using Darmon.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
+using Darmon.Application.DTOs.ClickDtos.RequestResponseDto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Darmon.Application.DTOs.ClickDtos.GetPaymentUrlDto;
 
 namespace Darmon.API.Controllers;
 
@@ -12,14 +17,57 @@ namespace Darmon.API.Controllers;
 public class ClickPaymentsController : ControllerBase
 {
     private readonly IClickPaymentService _clickPaymentService;
+    private readonly IUserService _userService;
     private readonly ILogger<ClickPaymentsController> _logger;
 
     public ClickPaymentsController(
         IClickPaymentService clickPaymentService,
+        IUserService userService,
         ILogger<ClickPaymentsController> logger)
     {
         _clickPaymentService = clickPaymentService;
+        _userService = userService;
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Yangi to'lov havolasini yaratish.
+    /// </summary>
+    [HttpGet("create")]
+    public async Task<ActionResult<GetPaymentUrlDto>> CreatePayment(float amount, int UserId)
+    {
+        try
+        {
+            var userId = UserId;
+
+            // To'lov miqdori minimal chegara (1000) dan kam bo'lmasligi kerak
+            if (amount < 1000)
+            {
+                _logger.LogWarning("Invalid amount: {Amount}", amount);
+                return BadRequest("Miqdor Min 1000 bo'lishi kerak");
+            }
+
+            // Bu metod avtomatik ravishda yangi tranzaksiya yaratadi va URL qaytaradi
+            var urlResult = await _clickPaymentService.Create(amount, userId);
+
+            if (!urlResult.Success)
+            {
+                _logger.LogWarning("Payment URL creation failed: {Message}", urlResult.Message);
+                return BadRequest(urlResult.Message);
+            }
+
+            var result = new GetPaymentUrlDto
+            {
+                PayUrl = urlResult.Data
+            };
+            _logger.LogInformation("Payment URL created for user {UserId}: {PayUrl}", userId, result.PayUrl);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating payment URL.");
+            return StatusCode(500, $"Havolani yaratishda xatolik yuz berdi. {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -31,26 +79,24 @@ public class ClickPaymentsController : ControllerBase
         try
         {
             _logger.LogInformation("Click prepare request: {ClickTransId}, {MerchantTransId}, {Amount}",
-                request.Click_Trans_Id, request.Merchant_Trans_Id, request.Amount);
+                request.click_trans_id, request.merchant_trans_id, request.amount);
 
-            var result = await _clickPaymentService.ProcessPrepareRequestAsync(request);
+            var result = await _clickPaymentService.Prepare(request);
 
-            if (result.Error != 0)
-            {
-                _logger.LogWarning("Click prepare failed: {Error} - {ErrorNote}", result.Error, result.Error_Note);
-                return BadRequest(result);
-            }
-
-            _logger.LogInformation("Click prepare successful: {MerchantPrepareId}", result.Merchant_Prepare_Id);
+            // Click.uz xato kodlarini qaytarishni talab qiladi, shuning uchun Ok() va BadRequest() emas, Ok() va StatusCode(200) dan foydalanish kerak.
+            // Va butun ClickPrepareResponseDto obyektini qaytarish lozim.
             return Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Click prepare error: {ClickTransId}", request.Click_Trans_Id);
+            _logger.LogError(ex, "Click prepare error: {ClickTransId}", request.click_trans_id);
             return StatusCode(500, new ClickPrepareResponseDto
             {
-                Error = -8,
-                Error_Note = "Server error"
+                click_trans_id = request.click_trans_id,
+                merchant_trans_id = request.merchant_trans_id,
+                merchant_prepare_id = "",
+                error = 1, // Umuman server xatosi
+                error_note = "Internal Server Error"
             });
         }
     }
@@ -64,104 +110,23 @@ public class ClickPaymentsController : ControllerBase
         try
         {
             _logger.LogInformation("Click complete request: {ClickTransId}, {MerchantTransId}, {Error}",
-                request.Click_Trans_Id, request.Merchant_Trans_Id, request.Error);
+                request.click_trans_id, request.merchant_trans_id, request.error);
 
-            var result = await _clickPaymentService.ProcessCompleteRequestAsync(request);
+            var result = await _clickPaymentService.Complete(request);
 
-            if (result.Error != 0)
-            {
-                _logger.LogWarning("Click complete failed: {Error} - {ErrorNote}", result.Error, result.Error_Note);
-                return BadRequest(result);
-            }
-
-            _logger.LogInformation("Click complete successful: {MerchantConfirmId}", result.Merchant_Confirm_Id);
+            // Xuddi "prepare" kabi, Ok() ni ishlatib, butun javob obyektini qaytaramiz
             return Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Click complete error: {ClickTransId}", request.Click_Trans_Id);
+            _logger.LogError(ex, "Click complete error: {ClickTransId}", request.click_trans_id);
             return StatusCode(500, new ClickCompleteResponseDto
             {
-                Error = -8,
-                Error_Note = "Server error"
+                click_trans_id = request.click_trans_id,
+                merchant_trans_id = request.merchant_trans_id,
+                error = 1, // Umuman server xatosi
+                error_note = "Internal Server Error"
             });
         }
     }
-
-    /// <summary>
-    /// Clickdan kelgan notificationni qayta ishlash
-    /// </summary>
-    [HttpPost("notification")]
-    public async Task<ActionResult> HandleNotification([FromForm] ClickCompleteRequestDto notification)
-    {
-        try
-        {
-            _logger.LogInformation("Click notification: {ClickTransId}, {MerchantTransId}, {Error}",
-                notification.Click_Trans_Id, notification.Merchant_Trans_Id, notification.Error);
-
-            // Notificationni qayta ishlash (complete bilan bir xil)
-            var result = await _clickPaymentService.ProcessCompleteRequestAsync(notification);
-
-            if (result.Error == 0)
-            {
-                _logger.LogInformation("Notification processed successfully: {MerchantTransId}", notification.Merchant_Trans_Id);
-                return Ok(new { Success = true });
-            }
-            else
-            {
-                _logger.LogWarning("Notification processing failed: {Error}", result.Error);
-                return BadRequest(new { Success = false, Error = result.Error });
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Notification processing error: {ClickTransId}", notification.Click_Trans_Id);
-            return StatusCode(500, new { Success = false, Message = "Server error" });
-        }
-    }
-
-    /// <summary>
-    /// Signature tekshirish (test uchun)
-    /// </summary>
-    [HttpPost("verify-signature")]
-    public async Task<ActionResult> VerifySignature([FromBody] SignatureVerifyRequest request)
-    {
-        try
-        {
-            // Test uchun signature tekshirish
-            var isValid = await _clickPaymentService.ValidateClickSignatureAsync(new ClickPrepareRequestDto
-            {
-                Click_Trans_Id = request.ClickTransId,
-                Service_Id = request.ServiceId,
-                Merchant_Trans_Id = request.MerchantTransId,
-                Amount = request.Amount,
-                Action = request.Action,
-                Sign_Time = request.SignTime,
-                Sign_String = request.SignString
-            });
-
-            return Ok(new
-            {
-                Success = true,
-                IsValid = isValid
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Signature verification error");
-            return StatusCode(500, new { Success = false, Message = "Server error" });
-        }
-    }
-}
-
-// Signature tekshirish uchun DTO
-public class SignatureVerifyRequest
-{
-    public int ClickTransId { get; set; }
-    public int ServiceId { get; set; }
-    public int MerchantTransId { get; set; }
-    public decimal Amount { get; set; }
-    public int Action { get; set; }
-    public string SignTime { get; set; }
-    public string SignString { get; set; }
 }

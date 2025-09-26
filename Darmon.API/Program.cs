@@ -16,8 +16,6 @@ using Darmon.Infrastructure.SettingModels;
 using Darmon.Application.DTOs.Configurations;
 using Darmon.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using Darmon.Application.Services.Click;
-using Darmon.Infrastructure.Click;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -96,7 +94,8 @@ builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
+builder.Services.AddScoped<ISellerWalletRepository, SellerWalletRepository>();
 
 
 
@@ -110,7 +109,6 @@ builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
@@ -121,7 +119,7 @@ builder.Services.AddSingleton<IPasswordHasherService>(
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
 builder.Services.Configure<ClickSettings>(builder.Configuration.GetSection("ClickSettings"));
-builder.Services.AddHttpClient<IClickApiClient, ClickApiClient>();
+
 builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
 
 
@@ -134,7 +132,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
+    options.RequireHttpsMetadata = true;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -146,6 +144,10 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
     };
+    Console.WriteLine("=== VALIDATE TOKEN ===");
+    Console.WriteLine("Secret: " + builder.Configuration["JwtSettings:Secret"]);
+    Console.WriteLine("Issuer: " + builder.Configuration["JwtSettings:Issuer"]);
+    Console.WriteLine("Audience: " + builder.Configuration["JwtSettings:Audience"]);
 });
 
 // 2.8. EXTERNAL SERVICES CONFIGURATION

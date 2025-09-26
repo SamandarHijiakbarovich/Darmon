@@ -23,7 +23,7 @@ public class OrdersController : ControllerBase
     // ====================== USER (Mijoz) ======================
 
     [HttpPost]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
     {
         if (!ModelState.IsValid)
@@ -42,7 +42,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet("my")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> GetUserOrders(int userId)
     {
         try
@@ -58,7 +58,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPut("{id}/cancel")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Customer")]
     public async Task<IActionResult> Cancel(int id)
     {
         try
