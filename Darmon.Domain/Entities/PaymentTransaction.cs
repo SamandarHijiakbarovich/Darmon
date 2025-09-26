@@ -1,35 +1,40 @@
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Common;
 using Darmon.Domain.Entities.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 
 public class PaymentTransaction : BaseEntity
 {
-    public decimal Amount { get; set; }
 
-    public string InternalTraceId { get; private set; } = Guid.NewGuid().ToString();
+    [ForeignKey("User")]
+    public int UserId { get; set; }  // Foydalanuvchi bilan bog'liq bo'lgan ID
 
-    public TransactionStatus Status { get; set; }
+    [Required]
+    public string? TransactionId { get; set; }  // Tizim orqali yuborilgan tranzaksiya ID
 
-    public string? ClientRedirectUrl { get; set; }
+    public string? PaymentTransId { get; set; }  // Click yoki boshqa to'lov tizimi orqali kelgan tranzaksiya ID
 
-    public string? CallbackUrl { get; set; }
+    [Required]
+    public float Amount { get; set; } // Tranzaksiya summasi
 
-    public string? ErrorMessage { get; set; }
+    [Required]
+    public DateTime CreatedAt { get; set; }  // Tranzaksiya yaratilgan vaqt
 
-    public string? GatewaySessionId { get; set; }
+    public DateTime? LastUpdatedAt { get; set; } // Tranzaksiya oxirgi marta yangilangan vaqt
 
-    // Relations
-    public int PaymentId { get; set; }
+    [Required]
+    public TransactionStatus Status { get; set; }  // Tranzaksiya holati (Pending, Completed, Failed, va hokazo)
 
-    public Payment Payment { get; set; } = default!;
+    [Required]
+    public PaymentType PaymentType { get; set; }  // To'lov turi (Click, Payme, UPay, va h.k.)
 
-    public ClickTransaction ClickTransactions { get; set; } 
+    // Navigatsiya xususiyati
+    public User? User { get; set; }  // Tranzaksiyani amalga oshirgan foydalanuvchi
 
-    // Helper methods
-    public bool CanRetry(int retryWindowMinutes = 60)
-        => Status == TransactionStatus.Failed &&
-           CreatedAt.AddMinutes(retryWindowMinutes) > DateTime.UtcNow;
+    public int? OrderId { get; set; }
+    public Order? Order { get; set; }
 }
 
 

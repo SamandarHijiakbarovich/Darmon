@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,9 +9,9 @@ namespace Darmon.Application.DTOs.ClickDtos.ClickResponseDto;
 
 public class ClickPrepareResponseDto
 {
-    public int Click_Trans_Id { get; set; }
-    public int Merchant_Trans_Id { get; set; }
-    public int Merchant_Prepare_Id { get; set; }
-    public int Error { get; set; }
-    public string? Error_Note { get; set; }
+    public long click_trans_id { get; set; } // CLICK tizimida to'lov ID (bigint)
+    public string merchant_trans_id { get; set; } // Buyurtma ID / shaxsiy hisob / yetkazib beruvchining billing tizimidagi login
+    public string merchant_prepare_id { get; set; } // Yetkazib beruvchining billing tizimidagi tayyorlov ID (preparatsiya qilingan to'lov ID)
+    public int error { get; set; } // Xato kodi
+    public string error_note { get; set; } // Xato haqida izoh
 }

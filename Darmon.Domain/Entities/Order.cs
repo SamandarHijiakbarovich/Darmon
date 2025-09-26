@@ -16,7 +16,7 @@ public class Order : AuditableEntity
     public OrderStatus Status { get; set; }
 
     public int CourierId { get; set; }
-    public Courier Courier { get; set; }
+    public Courier? Courier { get; set; }
 
 
     // Relations
@@ -29,8 +29,8 @@ public class Order : AuditableEntity
     public int BranchId { get; set; }
     public Branch Branch { get; set; } = default!;
 
-    public int? PaymentId { get; set; }
-    public Payment? Payment { get; set; }
+    public Guid? PaymentTransactionId { get; set; }
+    public PaymentTransaction? PaymentTransaction { get; set; }
 
     public ICollection<OrderItem> OrderItems { get; set; }
 }

@@ -9,10 +9,11 @@ namespace Darmon.Domain.Interfaces;
 
 public interface IPaymentTransactionRepository:IRepository<PaymentTransaction>
 {
-    Task<PaymentTransaction> AddAsync(PaymentTransaction transaction);
-    Task<PaymentTransaction?> GetByIdAsync(int id, bool includeGateway = true);
-    Task UpdateAsync(PaymentTransaction transaction);
-    Task<IEnumerable<PaymentTransaction>> GetByPaymentIdAsync(int paymentId, bool includeGateway = true);
-    Task<IEnumerable<PaymentTransaction>> GetByStatusAsync(TransactionStatus status, int pageNumber = 1, int pageSize = 10);
-    Task<PaymentTransaction> GetByInternalTraceIdAsync(string internalTraceId);
+
+
+        Task<string> GenerateTransactionIdAsync();
+        Task SaveChangesAsync(PaymentTransaction transaction);
+        Task UpdateChangesAsync(PaymentTransaction transaction);
+        Task<PaymentTransaction> GetTransactionByTransactionIdAsync(string transactionId);
+ 
 }
