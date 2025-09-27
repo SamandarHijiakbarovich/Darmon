@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Darmon.Application.DTOs;
+using Darmon.Application.DTOs.AddressDtos;
+using Darmon.Application.DTOs.BranchDtos;
 using Darmon.Application.DTOs.CartItemDtos;
 using Darmon.Application.DTOs.CategotyDtos;
 using Darmon.Application.DTOs.CourierDtos;
+using Darmon.Application.DTOs.DeliveryDtos;
 using Darmon.Application.DTOs.OrderDtos;
 using Darmon.Application.DTOs.ProductDTos;
 using Darmon.Application.DTOs.SellerWalletDtos;
@@ -10,7 +13,6 @@ using Darmon.Application.DTOs.User;
 using Darmon.Application.DTOs.WithdrawHistoryDtos;
 using Darmon.Domain.Entities;
 using Darmon.Domain.Entities.Enums;
-using System.Text.Json;
 
 namespace Darmon.Application.Mappings;
 
@@ -18,6 +20,9 @@ public class MappingProfil : Profile
 {
     public MappingProfil()
     {
+        CreateMap<Address, AddressDto>(); // Entity → DTO>
+        CreateMap<CreateAddressDto, Address>(); // DTO → Entity
+        CreateMap<UpdateAddressDto, Address>(); // DTO → Entity
 
 
         // 🧑‍💼 User mapping
@@ -54,6 +59,16 @@ public class MappingProfil : Profile
 
         // 📦 Order mapping
         CreateMap<Order, OrderDto>(); // Entity → DTO
+        CreateMap<CreateOrderDto, Order>();
+        CreateMap<UpdateOrderDto, Order>();
+
+        CreateMap<CreateDeliveryDto, Delivery>();
+        CreateMap<UpdateDeliveryDto, Delivery>();
+        CreateMap<Delivery, DeliveryDto>();
+
+        CreateMap<CreateBranchDto, Branch>();
+        CreateMap<UpdateBranchDto, Branch>();
+        CreateMap<Branch, BranchDto>();
 
         // 💰 SellerWallet mapping
         CreateMap<SellerWallet, SellerWalletDto>() // Entity → DTO
