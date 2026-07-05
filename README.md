@@ -152,4 +152,64 @@ samaralilar roli (Admin, Dorixona, Mijoz) asosida access boshqariladi
 
  👨‍⚕️ Retseptni yuklash va natija tizimi
 
+---
+
+## 🛡 Ishlab Chiqarishga Tayyorlik va Xavfsizlik
+
+Loyiha quyidagi mustahkamlashtiruvchi (hardening) qatlamlar bilan ta'minlangan:
+
+### Global Xatolik Boshqaruvi
+Barcha istisnolar bitta markazlashgan middleware (`GlobalExceptionHandlingMiddleware`)
+orqali tutiladi va RFC 7807 (ProblemDetails) uslubidagi bir xil JSON javobga
+aylantiriladi. Controller'larda takrorlanuvchi `try/catch` bloklariga ehtiyoj yo'q.
+
+Domen istisnolari mos HTTP status kodlariga o'giriladi:
+
+| Istisno                 | HTTP | `error`             |
+|-------------------------|------|---------------------|
+| `NotFoundException`     | 404  | `not_found`         |
+| `ValidationException`   | 400  | `validation_error`  |
+| `BadRequestException`   | 400  | `bad_request`       |
+| `UnauthorizedException` | 401  | `unauthorized`      |
+| `ForbiddenException`    | 403  | `forbidden`         |
+| `ConflictException`     | 409  | `conflict`          |
+
+Xatolik javobi namunasi:
+
+```json
+{
+  "status": 409,
+  "error": "conflict",
+  "title": "Bu email allaqachon ro'yxatdan o'tgan",
+  "traceId": "0HN...:00000001"
+}
+```
+
+> ℹ️ Ichki (5xx) xatoliklarning texnik tafsilotlari faqat `Development`
+> muhitida ochib beriladi.
+
+### Xavfsizlik Sarlavhalari
+Har bir javobga `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`
+va `Permissions-Policy` sarlavhalari qo'shiladi.
+
+### Rate Limiting
+IP manzil bo'yicha daqiqasiga 100 ta so'rov cheklovi (`429 Too Many Requests`).
+
+### JWT Validatsiyasi
+Ilova ishga tushishida `JwtSettings` (Secret ≥ 256 bit, Issuer, Audience)
+majburiy tekshiriladi. Token muddati `ClockSkew = 0` bilan aniq baholanadi.
+Maxfiy kalitlar hech qachon jurnalga (log) yozilmaydi.
+
+### CORS
+Ruxsat etilgan manzillar `appsettings.json` dagi `Cors:AllowedOrigins`
+orqali sozlanadi.
+
+### Health Check
+Ilova holatini kuzatish uchun `GET /health` endpoint'i mavjud.
+
+### Testlar
+Domen qatlami (`Money`, `PhoneNumber` value-object'lari va istisno ierarxiyasi)
+uchun xUnit + FluentAssertions asosidagi birlik testlari `tests/Darmon.UnitTests`
+katalogida joylashgan.
+
 
