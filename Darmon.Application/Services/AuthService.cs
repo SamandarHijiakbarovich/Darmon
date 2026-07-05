@@ -4,6 +4,7 @@ using Darmon.Application.DTOs.AuthResponse;
 using Darmon.Application.DTOs.User;
 using Darmon.Application.Interfaces;
 using Darmon.Domain.Entities;
+using Darmon.Domain.Exceptions;
 using Darmon.Domain.Interfaces;
 using Darmon.Infrastructure.Services.IServices;
 using System;
@@ -41,12 +42,18 @@ public class AuthService : IAuthService
     public async Task<AuthResponse> RegisterAsync(UserRequestDto userDto)
     {
         if (await _userRepository.GetByEmailAsync(userDto.Email) != null)
-            throw new ApplicationException("Bu email allaqachon ro'yxatdan o'tgan");
+            throw new ConflictException("Bu email allaqachon ro'yxatdan o'tgan");
 
         var user = _mapper.Map<User>(userDto);
         user.PasswordHash = _passwordHasher.HashPassword(userDto.Password);
         user.CreatedAt = DateTime.UtcNow;
-        user.Role=userDto.Role;
+        user.Role = userDto.Role;
+
+        // Refresh tokenni generatsiya qilib, foydalanuvchi bilan birga saqlaymiz,
+        // shunda keyinchalik refresh-token oqimi to'g'ri ishlaydi.
+        var refreshToken = _tokenService.GenerateRefreshToken();
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpires = _tokenService.GetRefreshTokenExpiration();
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
@@ -54,11 +61,11 @@ public class AuthService : IAuthService
         await _emailService.SendWelcomeEmailAsync(user.Email, user.FirstName);
 
         return new AuthResponse(
-     accessToken: _tokenService.GenerateAccessToken(user),
-     expiresAt: _tokenService.GetAccessTokenExpiration(),
-     refreshToken: _tokenService.GenerateRefreshToken(),
-     user: _mapper.Map<UserResponseDto>(user)
- );
+            accessToken: _tokenService.GenerateAccessToken(user),
+            expiresAt: _tokenService.GetAccessTokenExpiration(),
+            refreshToken: refreshToken,
+            user: _mapper.Map<UserResponseDto>(user)
+        );
     }
 
 
@@ -67,14 +74,20 @@ public class AuthService : IAuthService
         var user = await _userRepository.GetByEmailAsync(loginDto.Email);
 
         if (user == null || !_passwordHasher.VerifyPassword(loginDto.Password, user.PasswordHash))
-            throw new ApplicationException("Email yoki parol noto'g'ri");
+            throw new UnauthorizedException("Email yoki parol noto'g'ri");
+
+        // Har bir kirishda yangi refresh token beriladi va bazaga yoziladi.
+        var refreshToken = _tokenService.GenerateRefreshToken();
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpires = _tokenService.GetRefreshTokenExpiration();
+        await _userRepository.SaveChangesAsync();
 
         return new AuthResponse(
-    accessToken: _tokenService.GenerateAccessToken(user),
-    expiresAt: _tokenService.GetAccessTokenExpiration(),
-    refreshToken: _tokenService.GenerateRefreshToken(),
-    user: _mapper.Map<UserResponseDto>(user)
-);
+            accessToken: _tokenService.GenerateAccessToken(user),
+            expiresAt: _tokenService.GetAccessTokenExpiration(),
+            refreshToken: refreshToken,
+            user: _mapper.Map<UserResponseDto>(user)
+        );
     }
 
 
@@ -113,7 +126,7 @@ public class AuthService : IAuthService
         var user = await _userRepository.GetByRefreshTokenAsync(refreshToken);
 
         if (user == null || user.RefreshTokenExpires < DateTime.UtcNow)
-            throw new ApplicationException("Invalid or expired refresh token");
+            throw new UnauthorizedException("Refresh token yaroqsiz yoki muddati o'tgan");
 
         // 2. Yangi tokenlar generatsiya qilish
         var newAccessToken = _tokenService.GenerateAccessToken(user);

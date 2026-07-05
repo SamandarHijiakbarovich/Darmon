@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
 using Darmon.Infrastructure.Data;
@@ -15,21 +16,41 @@ using Darmon.Infrastructure.Services.IServices;
 using Darmon.Infrastructure.SettingModels;
 using Darmon.Application.DTOs.Configurations;
 using Darmon.Infrastructure.Services;
+using Darmon.API.Middleware;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string CorsPolicyName = "DarmonCorsPolicy";
 
 builder.Configuration
-    .AddJsonFile("appsettings.json")
-    .AddUserSecrets<Program>() // bu muhim
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddUserSecrets<Program>(optional: true) // bu muhim
     .AddEnvironmentVariables();
+
 // =============================================
 // 1. CONFIGURATION SETUP
 // =============================================
 var configuration = builder.Configuration;
 var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
+// JWT sozlamalari to'g'ri berilganini ilova ishga tushishidayoq tekshiramiz.
+// Bu sozlanmagan/bo'sh maxfiy kalit bilan xatolarga tushishning oldini oladi.
+if (jwtSettings is null
+    || string.IsNullOrWhiteSpace(jwtSettings.Secret)
+    || string.IsNullOrWhiteSpace(jwtSettings.Issuer)
+    || string.IsNullOrWhiteSpace(jwtSettings.Audience))
+{
+    throw new InvalidOperationException(
+        "JwtSettings noto'g'ri sozlangan. 'Secret', 'Issuer' va 'Audience' " +
+        "qiymatlari appsettings yoki muhit o'zgaruvchilarida ko'rsatilishi shart.");
+}
+
+if (Encoding.UTF8.GetByteCount(jwtSettings.Secret) < 32)
+{
+    throw new InvalidOperationException(
+        "JwtSettings:Secret kamida 32 bayt (256 bit) uzunlikda bo'lishi kerak.");
+}
 
 // =============================================
 // 2. SERVICE REGISTRATION
@@ -41,11 +62,15 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Darmon API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Darmon API",
+        Version = "v1",
+        Description = "Dori-darmon yetkazib berish xizmati uchun RESTful API."
+    });
     c.UseInlineDefinitionsForEnums();
     c.SchemaGeneratorOptions = new SchemaGeneratorOptions
     {
@@ -96,9 +121,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
 builder.Services.AddScoped<ISellerWalletRepository, SellerWalletRepository>();
-
-
-
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // 2.5. APPLICATION SERVICES
@@ -107,21 +130,16 @@ builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<ICartItemService, CartItemService>();
 
 // 2.6. AUTHENTICATION SERVICES
 builder.Services.AddSingleton<IPasswordHasherService>(
     _ => new BCryptPasswordHasher(workFactor: 11));
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
-
-builder.Services.Configure<ClickSettings>(builder.Configuration.GetSection("ClickSettings"));
-
-builder.Services.AddScoped<IClickPaymentService, ClickPaymentService>();
-
 
 // 2.7. JWT AUTHENTICATION CONFIGURATION
 builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
@@ -132,7 +150,9 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true;
+    // Development'da HTTPS metadata talab qilinmaydi (lokal test uchun),
+    // ishlab chiqarishda esa majburiy.
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -142,20 +162,66 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+        // Tokenning amal qilish muddatini aniqroq tekshirish uchun soat farqini nolga tushiramiz.
+        ClockSkew = TimeSpan.Zero
     };
-    Console.WriteLine("=== VALIDATE TOKEN ===");
-    Console.WriteLine("Secret: " + builder.Configuration["JwtSettings:Secret"]);
-    Console.WriteLine("Issuer: " + builder.Configuration["JwtSettings:Issuer"]);
-    Console.WriteLine("Audience: " + builder.Configuration["JwtSettings:Audience"]);
 });
 
+builder.Services.AddAuthorization();
+
 // 2.8. EXTERNAL SERVICES CONFIGURATION
+builder.Services.Configure<ClickSettings>(configuration.GetSection("ClickSettings"));
 builder.Services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
 builder.Services.Configure<SmsSettings>(configuration.GetSection("SmsSettings"));
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddHttpClient<ISmsService, SmsService>();
+
+// 2.9. CORS
+var corsOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicyName, policy =>
+    {
+        if (corsOrigins is { Length: > 0 })
+        {
+            policy.WithOrigins(corsOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        }
+        else
+        {
+            // Aniq manzillar sozlanmagan bo'lsa (masalan, lokal ishlab chiqish),
+            // barcha manzillarga ruxsat beramiz (credentials'siz).
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+    });
+});
+
+// 2.10. RATE LIMITING (abuse va DoS'ga qarshi bazaviy himoya)
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ =>
+            new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            });
+    });
+});
+
+// 2.11. HEALTH CHECKS
+builder.Services.AddHealthChecks();
 
 // =============================================
 // 3. APP BUILDING
@@ -165,6 +231,10 @@ var app = builder.Build();
 // =============================================
 // 4. MIDDLEWARE PIPELINE
 // =============================================
+
+// 4.0. GLOBAL EXCEPTION HANDLING (eng tashqi qatlam)
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 // 4.1. DEVELOPMENT CONFIGURATION
 if (app.Environment.IsDevelopment())
@@ -180,17 +250,25 @@ if (app.Environment.IsDevelopment())
 // 4.2. SECURITY MIDDLEWARE
 app.UseHttpsRedirection();
 
-// 4.3. ROUTING MIDDLEWARE
+// 4.3. ROUTING & CORS
 app.UseRouting();
+app.UseCors(CorsPolicyName);
 
-// 4.4. AUTHENTICATION & AUTHORIZATION
+// 4.4. RATE LIMITING
+app.UseRateLimiter();
+
+// 4.5. AUTHENTICATION & AUTHORIZATION
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 4.5. ENDPOINTS
+// 4.6. ENDPOINTS
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 // =============================================
 // 5. APPLICATION START
 // =============================================
 app.Run();
+
+// Integratsion testlar uchun Program sinfini ochiq qilamiz.
+public partial class Program { }

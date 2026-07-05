@@ -1,4 +1,4 @@
-﻿using Darmon.Application.DTOs;
+using Darmon.Application.DTOs;
 using Darmon.Application.DTOs.AuthResponse;
 using Darmon.Application.DTOs.User;
 using Darmon.Application.Interfaces;
@@ -12,12 +12,10 @@ namespace Darmon.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IAuthService authService, ILogger<AuthController> logger)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _logger = logger;
         }
 
         /// <summary>
@@ -28,23 +26,11 @@ namespace Darmon.API.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Register([FromBody] UserRequestDto userDto)
         {
-            try
-            {
-                var authResponse = await _authService.RegisterAsync(userDto);
-                return Ok(authResponse);
-            }
-            catch (ApplicationException ex)
-            {
-                _logger.LogError(ex, "Error registering user");
-                return BadRequest(new { Error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error registering user");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "Internal server error" });
-            }
+            var authResponse = await _authService.RegisterAsync(userDto);
+            return Ok(authResponse);
         }
 
         /// <summary>
@@ -57,21 +43,8 @@ namespace Darmon.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
         {
-            try
-            {
-                var authResponse = await _authService.LoginAsync(loginDto);
-                return Ok(authResponse);
-            }
-            catch (ApplicationException ex)
-            {
-                _logger.LogError(ex, "Authentication failed");
-                return Unauthorized(new { Error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error during login");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "Internal server error" });
-            }
+            var authResponse = await _authService.LoginAsync(loginDto);
+            return Ok(authResponse);
         }
 
         /// <summary>
@@ -83,16 +56,8 @@ namespace Darmon.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            try
-            {
-                await _authService.RequestPasswordResetAsync(request.Email);
-                return Ok(new { Message = "Password reset email sent if account exists" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error requesting password reset");
-                return BadRequest(new { Error = ex.Message });
-            }
+            await _authService.RequestPasswordResetAsync(request.Email);
+            return Ok(new { Message = "Password reset email sent if account exists" });
         }
 
         /// <summary>
@@ -104,22 +69,14 @@ namespace Darmon.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetDto)
         {
-            try
-            {
-                var result = await _authService.ResetPasswordAsync(resetDto);
+            var result = await _authService.ResetPasswordAsync(resetDto);
 
-                if (!result)
-                {
-                    return BadRequest(new { Error = "Invalid or expired token" });
-                }
-
-                return Ok(new { Message = "Password successfully reset" });
-            }
-            catch (Exception ex)
+            if (!result)
             {
-                _logger.LogError(ex, "Error resetting password");
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(new { Error = "Invalid or expired token" });
             }
+
+            return Ok(new { Message = "Password successfully reset" });
         }
 
         /// <summary>
@@ -131,22 +88,8 @@ namespace Darmon.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
         {
-            try
-            {
-                // You'll need to implement this method in your AuthService
-                var authResponse = await _authService.RefreshTokenAsync(refreshTokenDto.RefreshToken);
-                return Ok(authResponse);
-            }
-            catch (ApplicationException ex)
-            {
-                _logger.LogError(ex, "Token refresh failed");
-                return Unauthorized(new { Error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error during token refresh");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "Internal server error" });
-            }
+            var authResponse = await _authService.RefreshTokenAsync(refreshTokenDto.RefreshToken);
+            return Ok(authResponse);
         }
     }
 }
